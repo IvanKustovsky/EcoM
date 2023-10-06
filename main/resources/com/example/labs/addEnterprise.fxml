@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="400.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddEnterpriseController">
+   <HBox prefHeight="61.0" prefWidth="394.0">
+      <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label"
+             text="Додавання об'єкта" textAlignment="CENTER">
+         <HBox.margin>
+            <Insets left="90.0"/>
+         </HBox.margin>
+      </Label>
+   </HBox>
+   <HBox prefHeight="23.0" prefWidth="398.0">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Назва" textAlignment="CENTER"
+            wrappingWidth="400.53680086135864">
+         <HBox.margin>
+            <Insets top="5.0"/>
+         </HBox.margin>
+         <font>
+            <Font size="23.0"/>
+         </font>
+      </Text>
+   </HBox>
+   <HBox layoutX="10.0" layoutY="72.0" prefHeight="51.0" prefWidth="394.0">
+      <TextField fx:id="enterpriseNameId" prefHeight="42.0" prefWidth="401.0" promptText="Введіть назву підриємства">
+         <HBox.margin>
+            <Insets left="5.0" right="5.0" top="5.0"/>
+         </HBox.margin>
+      </TextField>
+   </HBox>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Розташування" textAlignment="CENTER"
+         wrappingWidth="400.53679275512695">
+      <font>
+         <Font size="23.0"/>
+      </font>
+   </Text>
+   <TextField fx:id="locationId" prefHeight="56.0" prefWidth="384.0" promptText="Введіть розташування підриємства">
+      <VBox.margin>
+         <Insets left="5.0" right="5.0"/>
+      </VBox.margin>
+   </TextField>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Опис" textAlignment="CENTER" wrappingWidth="400.5367317199707">
+      <font>
+         <Font size="23.0"/>
+      </font>
+   </Text>
+   <TextField fx:id="descriptionId" prefHeight="56.0" prefWidth="384.0" promptText="Введіть опис підприємства"/>
+   <Button mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="110.0" styleClass="stylish-button"
+           text="Зберегти">
+      <VBox.margin>
+         <Insets left="145.0" right="100.0" top="10.0"/>
+      </VBox.margin>
+   </Button>
+</VBox>

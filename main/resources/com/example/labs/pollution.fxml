@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0"
+            prefWidth="936.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.PollutionController">
+    <AnchorPane prefHeight="90.0" prefWidth="936.0" style="-fx-background-color: #3498db;">
+        <Label layoutX="296.0" layoutY="16.0" prefHeight="44.0" prefWidth="343.0" text="Екологічний моніторинг"
+               textAlignment="RIGHT">
+            <font>
+                <Font name="Bookman Old Style Bold Italic" size="24.0"/>
+            </font>
+        </Label>
+        <Label layoutX="349.0" layoutY="60.0"
+               text="Виконали студенти групи ТР-13 Кустовський Іван та Малишева Вікторія">
+            <font>
+                <Font name="Century Gothic Bold" size="16.0"/>
+            </font>
+        </Label>
+    </AnchorPane>
+    <AnchorPane layoutY="90.0" prefHeight="53.0" prefWidth="936.0" style="-fx-background-color: #FAFA03;">
+        <Button fx:id="objectBtn" layoutX="154.0" layoutY="-1.0" mnemonicParsing="false"
+                onAction="#switchToObjectSceneBtn" prefHeight="62.0" prefWidth="147.0"
+                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
+                text="Підприємства"/>
+        <Button fx:id="pollutantBtn" layoutX="301.0" layoutY="-1.0" mnemonicParsing="false"
+                onAction="#switchToPollutantSceneBtn" prefHeight="62.0" prefWidth="147.0"
+                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
+                text="Забрудники"/>
+        <Button fx:id="pollutionBtn" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutionSceneBtn"
+                prefHeight="62.0" prefWidth="154.0"
+                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
+                text="Забруднення"/>
+    </AnchorPane>
+    <TableView fx:id="pollutionTable" layoutX="28.0" layoutY="296.0" prefHeight="302.0" prefWidth="879.0">
+      <columns>
+          <TableColumn fx:id="idCol" prefWidth="39.19997787475586" styleClass="table-column-id" text="ID"/>
+          <TableColumn fx:id="enterpriseNameCol" prefWidth="232.00001525878906" text="Підприємство"/>
+          <TableColumn fx:id="enterpriseLocationCol" prefWidth="288.0" text="Розташування"/>
+          <TableColumn fx:id="pollutantNameCol" prefWidth="160.7999267578125" text="Забрудник"/>
+          <TableColumn fx:id="valuePollutionCol" prefWidth="91.199951171875" styleClass="table-column-id"
+                       text="Викиди (т/рік)"/>
+          <TableColumn fx:id="yearCol" prefWidth="59.199951171875" styleClass="table-column-id" text="Рік"/>
+      </columns>
+        <styleClass>
+          <String fx:value="table-row-cell"/>
+          <String fx:value="table-cell"/>
+        </styleClass>
+    </TableView>
+    <Button fx:id="importExcelFileBtn" layoutX="756.0" layoutY="239.0" mnemonicParsing="false"
+            onAction="#importExcelData" styleClass="stylish-button" text="Upload .xlsx file"/>
+    <Label layoutX="394.0" layoutY="170.0" prefHeight="18.0" prefWidth="147.0" styleClass="custom-label"
+           text="Забруднення"/>
+    <ImageView fx:id="addDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="28.0" layoutY="224.0"
+               onMouseClicked="#getAddView" onMouseEntered="#showAddTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\addData.png"/>
+    </ImageView>
+    <ImageView fx:id="refreshTableImage" fitHeight="62.0" fitWidth="69.0" layoutX="90.0" layoutY="224.0"
+               onMouseClicked="#refreshTable" onMouseEntered="#showRefreshTip" pickOnBounds="true"
+               preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\refreshTable.png"/>
+    </ImageView>
+    <ImageView fx:id="editDataImage" fitHeight="71.0" fitWidth="69.0" layoutX="160.0" layoutY="221.0"
+               onMouseClicked="#editData" onMouseEntered="#showEditTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\edit.png"/>
+    </ImageView>
+    <ImageView fx:id="deleteDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="236.0" layoutY="221.0"
+               onMouseClicked="#deleteData" onMouseEntered="#showDeleteTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\delete.png"/>
+    </ImageView>
+</AnchorPane>
