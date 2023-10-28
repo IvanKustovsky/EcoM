@@ -2,16 +2,19 @@ package com.example.labs.Models;
 
 public class Pollution {
     int id_pollution,year;
-    String nameObject,location,name;
-    double value_pollution;
+    String nameObject,name;
+    double value_pollution,concentration, hq, cr;
 
-    public Pollution(int id_pollution, String nameObject, String location, String name, double value_pollution,int year) {
+    public Pollution(int id_pollution, String nameObject, String name, double value_pollution,
+                     double concentration, double hq, double cr,int year) {
         this.id_pollution = id_pollution;
         this.year = year;
         this.nameObject = nameObject;
-        this.location = location;
         this.name = name;
         this.value_pollution = value_pollution;
+        this.concentration = concentration;
+        this.hq = hq;
+        this.cr = cr;
     }
 
     public int getId_pollution() {
@@ -38,14 +41,6 @@ public class Pollution {
         this.nameObject = nameObject;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getName() {
         return name;
     }
@@ -60,5 +55,29 @@ public class Pollution {
 
     public void setValue_pollution(double value_pollution) {
         this.value_pollution = value_pollution;
+    }
+
+    public double getConcentration() {
+        return concentration;
+    }
+
+    public void setConcentration(double concentration) {
+        this.concentration = concentration;
+    }
+
+    public double getHq() {
+        return hq;
+    }
+
+    public void setHq(double hq) {
+        this.hq = hq;
+    }
+
+    public double getCr() {
+        return cr;
+    }
+
+    public void setCr(double cr) {
+        this.cr = cr;
     }
 }

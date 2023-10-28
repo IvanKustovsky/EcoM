@@ -1,6 +1,5 @@
 package com.example.labs.DataBase;
 
-
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.logging.Logger;
 
 public class DataBaseHandler extends Configs {
     Connection dbConnection;
+
     public Connection getDbConnection() {
         String connectionString = "jdbc:mysql://" + dbHost + ":"+
                 dbPort + "/" + dbName;
@@ -25,12 +25,12 @@ public class DataBaseHandler extends Configs {
 
         try {
             // Підключення до бази даних
-            Connection connection = getDbConnection();
+             dbConnection = getDbConnection();
 
             // Запит до бази даних для вибору всіх імен зі стовпця "name"
             String sql = "SELECT " + Const.OBJECT_ID + ", " + Const.OBJECT_NAME + " FROM " + Const.OBJECT_TABLE;
 
-            Statement statement = connection.createStatement();
+            Statement statement = dbConnection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
             // Додавання імен до списку
@@ -43,7 +43,7 @@ public class DataBaseHandler extends Configs {
             // Закриття ресурсів
             resultSet.close();
             statement.close();
-            connection.close();
+            dbConnection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,12 +56,12 @@ public class DataBaseHandler extends Configs {
 
         try {
             // Підключення до бази даних
-            Connection connection = getDbConnection();
+            dbConnection = getDbConnection();
 
             // Запит до бази даних для вибору всіх імен зі стовпця "name"
             String sql = "SELECT " + Const.POLLUTANT_CODE + ", " + Const.POLLUTANT_NAME + " FROM " + Const.POLLUTANT_TABLE;
 
-            Statement statement = connection.createStatement();
+            Statement statement = dbConnection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
             // Додавання імен до списку
@@ -74,7 +74,7 @@ public class DataBaseHandler extends Configs {
             // Закриття ресурсів
             resultSet.close();
             statement.close();
-            connection.close();
+            dbConnection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,7 +103,8 @@ public class DataBaseHandler extends Configs {
         ResultSet resSet;
         String select = "SELECT " + column + " FROM " + table + " WHERE " +
                 tableId + "=?";
-        try (PreparedStatement preparedStatement = getDbConnection().prepareStatement(select)) {
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(select)) {
             preparedStatement.setInt(1, id);
             resSet = preparedStatement.executeQuery();
 
@@ -111,10 +112,11 @@ public class DataBaseHandler extends Configs {
                 // Отримуємо значення з вибраного стовпця
                 return resSet.getString(column);
             }
+            resSet.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null; // Повертаємо null у разі відсутності результату
+        return null; // Повертаємо null у разі відсутності результату.
     }
 
     public int getMaxIdFromTable(String table) {
@@ -124,12 +126,15 @@ public class DataBaseHandler extends Configs {
         Statement statement;
         int maxId = 1;
         try {
-            statement = getDbConnection().createStatement();
+            dbConnection = getDbConnection();
+            statement = dbConnection.createStatement();
             ResultSet resultSet = statement.executeQuery(getMaxIdQuery);
             if (resultSet.next()) {
                 maxId = resultSet.getInt(1);
             }
             statement.close();
+            resultSet.close();
+            dbConnection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -146,5 +151,32 @@ public class DataBaseHandler extends Configs {
         return map.containsKey(code);
     }
 
+    public int isContainsRecordByEnterprisePollutantAndYear(int id_object, int pollutantCode,int year){
+        // Перевірка, чи існує запис з такими ж ім'ям підприємства, назвою забрудника речовини та роком
+        String checkQuery = "SELECT " + Const.POLLUTION_ID + " FROM " + Const.POLLUTION_TABLE +
+                " WHERE " + Const.POLLUTION_OBJECT_ID + " = ? AND " +
+                Const.POLLUTION_CODE_POLLUTANT + " = ? AND " + Const.POLLUTION_YEAR + " = ?";
+        dbConnection = getDbConnection();
+        try {
+            PreparedStatement checkStatement = dbConnection.prepareStatement(checkQuery);
+            checkStatement.setInt(1, id_object);
+            checkStatement.setInt(2, pollutantCode);
+            checkStatement.setInt(3, year);
+            ResultSet resultSet = checkStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return resultSet.getInt(Const.POLLUTION_ID);
+                }
+            }
+            resultSet.close();
+            checkStatement.close();
+            dbConnection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return -1;
+    }
 
 }

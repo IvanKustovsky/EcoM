@@ -5,76 +5,59 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0"
-            prefWidth="936.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.PollutantController">
-    <AnchorPane prefHeight="90.0" prefWidth="936.0" style="-fx-background-color: #3498db;">
-        <Label layoutX="296.0" layoutY="16.0" prefHeight="44.0" prefWidth="343.0" text="Екологічний моніторинг"
-               textAlignment="RIGHT">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="751.0" prefWidth="1136.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.PollutantController">
+    <AnchorPane prefHeight="90.0" prefWidth="1136.0" style="-fx-background-color: #3498db;">
+        <Label layoutX="396.0" layoutY="14.0" prefHeight="44.0" prefWidth="343.0" text="Екологічний моніторинг" textAlignment="RIGHT">
             <font>
-                <Font name="Bookman Old Style Bold Italic" size="24.0"/>
+                <Font name="Bookman Old Style Bold Italic" size="24.0" />
             </font>
         </Label>
-        <Label layoutX="349.0" layoutY="60.0"
-               text="Виконали студенти групи ТР-13 Кустовський Іван та Малишева Вікторія">
+        <Label layoutX="542.0" layoutY="58.0" text="Виконали студенти групи ТР-13 Кустовський Іван та Малишева Вікторія">
             <font>
-                <Font name="Century Gothic Bold" size="16.0"/>
+                <Font name="Century Gothic Bold" size="16.0" />
             </font>
         </Label>
     </AnchorPane>
-    <AnchorPane layoutY="90.0" prefHeight="53.0" prefWidth="936.0" style="-fx-background-color: #FAFA03;">
-        <Button fx:id="objectBtn" layoutX="154.0" layoutY="-1.0" mnemonicParsing="false"
-                onAction="#switchToObjectSceneBtn" prefHeight="62.0" prefWidth="147.0"
-                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
-                text="Підприємства"/>
-        <Button fx:id="pollutantBtn" layoutX="301.0" layoutY="-1.0" mnemonicParsing="false"
-                onAction="#switchToPollutantSceneBtn" prefHeight="62.0" prefWidth="147.0"
-                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
-                text="Забрудники"/>
-        <Button fx:id="pollutionBtn" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutionSceneBtn"
-                prefHeight="62.0" prefWidth="154.0"
-                style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;"
-                text="Забруднення"/>
+    <AnchorPane layoutY="90.0" prefHeight="62.0" prefWidth="1136.0" style="-fx-background-color: #FAFA03;">
+        <Button fx:id="objectBtn" layoutX="154.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToObjectSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Підприємства" />
+        <Button fx:id="pollutantBtn" layoutX="301.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutantSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забрудники" />
+        <Button fx:id="pollutionBtn" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutionSceneBtn" prefHeight="62.0" prefWidth="154.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забруднення" />
     </AnchorPane>
-    <TableView fx:id="pollutantsTable" layoutX="185.0" layoutY="301.0" prefHeight="300.0" prefWidth="550.0"
-               stylesheets="@styles.css">
+    <TableView fx:id="pollutantsTable" layoutX="97.0" layoutY="302.0" prefHeight="300.0" prefWidth="942.0" stylesheets="@styles.css">
         <columns>
-            <TableColumn fx:id="codeCol" prefWidth="40.0" styleClass="table-column-id" text="Код"/>
-            <TableColumn fx:id="pollutantNameCol" prefWidth="230.0" styleClass="table-column-id" text="Назва речовини"/>
-            <TableColumn fx:id="massConsumptionCol" prefWidth="160.0" styleClass="table-column-id"
-                         text="Масові витрати,  г/год."/>
-            <TableColumn fx:id="gdkCol" prefWidth="120.0" styleClass="table-column-id" text="ГДК, мг/м3"/>
+            <TableColumn fx:id="codeCol" prefWidth="40.0" styleClass="table-column-id" text="Код" />
+            <TableColumn fx:id="pollutantNameCol" prefWidth="230.0" styleClass="table-column-id" text="Назва речовини" />
+            <TableColumn fx:id="massConsumptionCol" prefWidth="160.0" styleClass="table-column-id" text="Масові витрати,  г/год." />
+         <TableColumn fx:id="rfcCol" prefWidth="212.79998779296875" styleClass="table-column-id" text="Референтна концентрація, мг/м^3" />
+         <TableColumn fx:id="sfCol" prefWidth="180.80010986328125" styleClass="table-column-id" text="Фактор нахилу, мг/(кг*доба)" />
+            <TableColumn fx:id="gdkCol" prefWidth="106.39984130859375" styleClass="table-column-id" text="ГДК, мг/м3" />
         </columns>
         <styleClass>
-        <String fx:value="table-cell"/>
-        <String fx:value="table-row-cell1"/>
+        <String fx:value="table-cell" />
+        <String fx:value="table-row-cell1" />
         </styleClass>
     </TableView>
-    <Button fx:id="importExcelFileBtn" layoutX="572.0" layoutY="237.0" mnemonicParsing="false"
-            onAction="#importExcelData" styleClass="stylish-button" text="Upload .xlsx file"/>
-    <Label layoutX="394.0" layoutY="170.0" prefHeight="18.0" prefWidth="147.0" styleClass="custom-label"
-           text="Забрудники"/>
-    <ImageView fx:id="addDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="185.0" layoutY="215.0"
-               onMouseClicked="#getAddView" onMouseEntered="#showAddTip" pickOnBounds="true" preserveRatio="true">
-        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\addData.png"/>
+    <Button fx:id="importExcelFileBtn" layoutX="707.0" layoutY="237.0" mnemonicParsing="false" onAction="#importExcelData" styleClass="stylish-button" text="Upload .xlsx file" />
+    <Label layoutX="501.0" layoutY="170.0" prefHeight="18.0" prefWidth="147.0" styleClass="custom-label" text="Забрудники" />
+    <ImageView fx:id="addDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="97.0" layoutY="229.0" onMouseClicked="#getAddView" onMouseEntered="#showAddTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\addData.png" />
     </ImageView>
-    <ImageView fx:id="refreshTableImage" fitHeight="62.0" fitWidth="69.0" layoutX="241.0" layoutY="215.0"
-               onMouseClicked="#refreshTable" onMouseEntered="#showRefreshTip" pickOnBounds="true"
-               preserveRatio="true">
-        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\refreshTable.png"/>
+    <ImageView fx:id="refreshTableImage" fitHeight="62.0" fitWidth="69.0" layoutX="172.0" layoutY="229.0" onMouseClicked="#refreshTable" onMouseEntered="#showRefreshTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\refreshTable.png" />
     </ImageView>
-    <ImageView fx:id="editDataImage" fitHeight="71.0" fitWidth="69.0" layoutX="303.0" layoutY="216.0"
-               onMouseClicked="#editData" onMouseEntered="#showEditTip" pickOnBounds="true" preserveRatio="true">
-        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\edit.png"/>
+    <ImageView fx:id="editDataImage" fitHeight="71.0" fitWidth="69.0" layoutX="245.0" layoutY="226.0" onMouseClicked="#editData" onMouseEntered="#showEditTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\edit.png" />
     </ImageView>
-    <ImageView fx:id="deleteDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="381.0" layoutY="219.0"
-               onMouseClicked="#deleteData" onMouseEntered="#showDeleteTip" pickOnBounds="true"
-               preserveRatio="true">
-        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\delete.png"/>
+    <ImageView fx:id="deleteDataImage" fitHeight="62.0" fitWidth="69.0" layoutX="321.0" layoutY="230.0" onMouseClicked="#deleteData" onMouseEntered="#showDeleteTip" pickOnBounds="true" preserveRatio="true">
+        <Image url="D:\Java projects 2\EcoM\labs\src\main\java\com\example\labs\Images\delete.png" />
     </ImageView>
+   <Button fx:id="exportIntoExcelBtn" layoutX="867.0" layoutY="237.0" mnemonicParsing="false" onAction="#exportIntoExcelBtn" styleClass="stylish-button" text="Download .xlsx file" />
+   <Button fx:id="showHideBtn" layoutX="508.0" layoutY="611.0" mnemonicParsing="false" onAction="#showFilters" prefHeight="46.0" prefWidth="134.0" styleClass="stylish-button" text="Show Filters" />
+   <TextField fx:id="pollutantFilter" layoutX="475.0" layoutY="669.0" prefHeight="42.0" prefWidth="199.0" promptText="Фільто по Забруднику" />
 </AnchorPane>

@@ -15,11 +15,16 @@ public class Const {
     public static final String POLLUTANT_NAME = "name";
     public static final String POLLUTANT_GDK = "gdk";
     public static final String POLLUTANT_MASS_CONSUMPTION = "mass_consumption";
+    public static final String POLLUTANT_RFC = "rfc";
+    public static final String POLLUTANT_SF = "sf";
     //Pollution
     public static final String POLLUTION_ID = "id_pollution";
     public static final String POLLUTION_OBJECT_ID = "id_object";
     public static final String POLLUTION_CODE_POLLUTANT = "code_pollutant";
     public static final String POLLUTION_VALUE = "value_pollution";
     public static final String POLLUTION_YEAR = "year";
+    public static final String POLLUTION_CONCENTRATION = "concentration";
+    public static final String POLLUTION_HQ = "hq";
+    public static final String POLLUTION_CR = "cr";
 
 }

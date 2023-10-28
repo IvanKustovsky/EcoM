@@ -9,62 +9,74 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="393.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutantController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="393.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutantController">
     <HBox prefHeight="61.0" prefWidth="394.0">
-        <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label"
-               text="Додавання об'єкта" textAlignment="CENTER">
+        <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label" text="Додавання об'єкта" textAlignment="CENTER">
             <HBox.margin>
-                <Insets left="90.0"/>
+                <Insets left="90.0" />
             </HBox.margin>
         </Label>
     </HBox>
     <HBox prefHeight="23.0" prefWidth="400.0">
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Назва" textAlignment="CENTER"
-              wrappingWidth="382.9367642402649">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Назва" textAlignment="CENTER" wrappingWidth="382.9367642402649">
             <HBox.margin>
-                <Insets top="5.0"/>
+                <Insets top="5.0" />
             </HBox.margin>
             <font>
-                <Font size="23.0"/>
+                <Font size="23.0" />
             </font>
         </Text>
     </HBox>
     <HBox layoutX="10.0" layoutY="72.0" prefHeight="51.0" prefWidth="394.0">
-        <TextField fx:id="pollutantNameId" prefHeight="42.0" prefWidth="401.0"
-                   promptText="Введіть назву забрудника">
+        <TextField fx:id="pollutantNameId" prefHeight="42.0" prefWidth="401.0" promptText="Введіть назву забрудника">
             <HBox.margin>
-                <Insets left="5.0" right="5.0" top="5.0"/>
+                <Insets left="5.0" right="5.0" top="5.0" />
             </HBox.margin>
         </TextField>
     </HBox>
-    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Гранично допустимі викиди(мг/м^3)" textAlignment="CENTER"
-          wrappingWidth="394.9367561340332">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Гранично допустимі викиди(мг/м^3)" textAlignment="CENTER" wrappingWidth="394.9367561340332">
         <font>
-            <Font size="23.0"/>
+            <Font size="23.0" />
         </font>
     </Text>
     <TextField fx:id="gdkId" prefHeight="34.0" prefWidth="100.0" promptText="Значення">
         <VBox.margin>
-            <Insets left="150.0" right="150.0"/>
+            <Insets left="150.0" right="150.0" />
         </VBox.margin>
     </TextField>
-    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Величина масової витрати  (г/год) " textAlignment="CENTER"
-          wrappingWidth="394.9367561340332">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Величина масової витрати  (г/год) " textAlignment="CENTER" wrappingWidth="394.9367561340332">
         <font>
-            <Font size="23.0"/>
+            <Font size="23.0" />
         </font>
     </Text>
     <TextField fx:id="massConsumptionId" prefHeight="34.0" prefWidth="100.0" promptText="Значення">
         <VBox.margin>
-        <Insets left="150.0" right="150.0"/>
+        <Insets left="150.0" right="150.0" />
         </VBox.margin>
     </TextField>
-    <Button mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="110.0" styleClass="stylish-button"
-            text="Зберегти">
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Референтна концентрація (мг/м^3) " textAlignment="CENTER" wrappingWidth="394.9367561340332">
+      <font>
+         <Font size="23.0" />
+      </font>
+   </Text>
+   <TextField fx:id="rfcId" prefHeight="34.0" prefWidth="100.0" promptText="Значення">
+      <VBox.margin>
+         <Insets left="150.0" right="150.0" />
+      </VBox.margin>
+   </TextField>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Фактор нахилу (мг/(кг*доба))" textAlignment="CENTER" wrappingWidth="394.9367561340332">
+      <font>
+         <Font size="23.0" />
+      </font>
+   </Text>
+   <TextField fx:id="sfId" prefHeight="34.0" prefWidth="337.0" promptText="Значення">
+      <VBox.margin>
+         <Insets left="150.0" right="150.0" />
+      </VBox.margin>
+   </TextField>
+    <Button mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="110.0" styleClass="stylish-button" text="Зберегти">
         <VBox.margin>
-            <Insets left="145.0" top="40.0"/>
+            <Insets left="145.0" top="40.0" />
         </VBox.margin>
     </Button>
 </VBox>

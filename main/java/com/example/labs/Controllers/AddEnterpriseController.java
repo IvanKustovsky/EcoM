@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AddEnterpriseController extends BaseController implements Initializable {
+public class AddEnterpriseController extends ObjectController implements Initializable {
     @FXML
     private TextField descriptionId;
     @FXML

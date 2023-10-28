@@ -10,71 +10,74 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="464.0"
-      prefWidth="400.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutionController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="479.0" prefWidth="400.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutionController">
     <HBox prefHeight="61.0" prefWidth="394.0">
-        <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label"
-               text="Додавання об'єкта" textAlignment="CENTER">
+        <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label" text="Додавання об'єкта" textAlignment="CENTER">
             <HBox.margin>
-                <Insets left="90.0"/>
+                <Insets left="90.0" />
             </HBox.margin>
         </Label>
     </HBox>
     <HBox prefHeight="23.0" prefWidth="398.0">
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Підприємство" textAlignment="CENTER"
-              wrappingWidth="400.53680086135864">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Підприємство" textAlignment="CENTER" wrappingWidth="400.53680086135864">
             <HBox.margin>
-                <Insets top="5.0"/>
+                <Insets top="5.0" />
             </HBox.margin>
             <font>
-                <Font size="23.0"/>
+                <Font size="23.0" />
             </font>
         </Text>
     </HBox>
     <HBox layoutX="10.0" layoutY="72.0" prefHeight="51.0" prefWidth="394.0">
         <ChoiceBox fx:id="enterprisesCB" prefHeight="26.0" prefWidth="300.0">
             <HBox.margin>
-                <Insets left="50.0" top="5.0"/>
+                <Insets left="50.0" top="5.0" />
             </HBox.margin>
         </ChoiceBox>
     </HBox>
-    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Забрудник" textAlignment="CENTER"
-          wrappingWidth="400.5367317199707">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Забрудник" textAlignment="CENTER" wrappingWidth="400.5367317199707">
         <font>
-            <Font size="23.0"/>
+            <Font size="23.0" />
         </font>
     </Text>
     <ChoiceBox fx:id="pollutantsCB" prefHeight="26.0" prefWidth="300.0">
         <VBox.margin>
-          <Insets left="50.0"/>
+          <Insets left="50.0" />
         </VBox.margin>
     </ChoiceBox>
-    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Викиди (т/рік)" textAlignment="CENTER"
-          wrappingWidth="400.5367317199707">
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Викиди (т/рік)" textAlignment="CENTER" wrappingWidth="400.5367317199707">
         <font>
-            <Font size="23.0"/>
+            <Font size="23.0" />
         </font>
     </Text>
     <TextField fx:id="pollutionValueId" prefHeight="38.0" prefWidth="50.0" promptText="Значення">
         <VBox.margin>
-        <Insets left="150.0" right="150.0"/>
+        <Insets left="150.0" right="150.0" />
         </VBox.margin>
     </TextField>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Концентрація (мг/м^3)" textAlignment="CENTER" wrappingWidth="400.5367317199707">
+      <font>
+         <Font size="23.0" />
+      </font>
+   </Text>
+   <TextField fx:id="concentrationValueId" prefHeight="38.0" prefWidth="50.0" promptText="Значення">
+      <VBox.margin>
+         <Insets left="150.0" right="150.0" />
+      </VBox.margin>
+   </TextField>
     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Рік" textAlignment="CENTER" wrappingWidth="400.5367317199707">
         <font>
-          <Font size="23.0"/>
+          <Font size="23.0" />
         </font>
     </Text>
     <ChoiceBox fx:id="yearCB" prefHeight="26.0" prefWidth="300.0">
         <VBox.margin>
-          <Insets left="160.0" right="160.0"/>
+          <Insets left="160.0" right="160.0" />
         </VBox.margin>
     </ChoiceBox>
-    <Button mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="110.0" styleClass="stylish-button"
-            text="Зберегти">
+    <Button mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="110.0" styleClass="stylish-button" text="Зберегти">
         <VBox.margin>
-            <Insets left="150.0" top="10.0"/>
+            <Insets left="150.0" top="10.0" />
         </VBox.margin>
     </Button>
 </VBox>

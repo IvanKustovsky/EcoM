@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.example.labs.DataBase.Const;
-import com.example.labs.DataBase.DataBaseHandler;
 import com.example.labs.Models.Enterprise;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ObjectController extends BaseController implements Initializable {
 
     @FXML
-    private TableView<Enterprise> objectsTable;
+    protected TableView<Enterprise> objectsTable;
     @FXML
     private TableColumn<Enterprise, String> descriptionCol;
     @FXML
@@ -41,6 +40,8 @@ public class ObjectController extends BaseController implements Initializable {
     private TableColumn<Enterprise, String> locationCol;
     @FXML
     private TableColumn<Enterprise, String> objectNameCol;
+    @FXML
+    private TextField enterpriseFilter;
     ObservableList<Enterprise> EnterprisesList = FXCollections.observableArrayList();
 
     @FXML
@@ -80,7 +81,8 @@ public class ObjectController extends BaseController implements Initializable {
 
             AddEnterpriseController addEnterpriseController = loader.getController();
             addEnterpriseController.setUpdate(true);
-            addEnterpriseController.setTextField(enterprise.getNameObject(), enterprise.getLocation(), enterprise.getDescription());
+            addEnterpriseController.setTextField(enterprise.getNameObject(), enterprise.getLocation(),
+                    enterprise.getDescription());
             Parent parent = loader.getRoot();
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
@@ -92,6 +94,7 @@ public class ObjectController extends BaseController implements Initializable {
             alert.setContentText("Щоб оновити запис спочатку оберіть його!");
             alert.showAndWait();
         }
+        refreshTable();
     }
 
     @FXML
@@ -112,14 +115,13 @@ public class ObjectController extends BaseController implements Initializable {
     void importExcelData() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("C:\\Users\\user\\Desktop" +
-                "\\НАВЧАННЯ\\5 семестр\\ЕкоМ\\Лаб1"));
+                "\\НАВЧАННЯ\\5 семестр\\ЕкоМ\\Лаб2"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
             try (FileInputStream fis = new FileInputStream(selectedFile);
-                 Workbook workbook = new XSSFWorkbook(fis);
-                 Connection connection = new DataBaseHandler().getDbConnection()) {
+                 Workbook workbook = new XSSFWorkbook(fis)) {
 
                 String insert = "INSERT INTO " + Const.OBJECT_TABLE + "(" + Const.OBJECT_ID + "," + Const.OBJECT_NAME + "," +
                         Const.OBJECT_LOCATION + "," + Const.OBJECT_DESCRIPTION + ")" +
@@ -170,6 +172,11 @@ public class ObjectController extends BaseController implements Initializable {
         refreshTable();
     }
 
+    @FXML
+    void exportIntoExcelBtn() {
+        exportIntoExcelBtn(objectsTable);
+    }
+
     private void loadData() {
         refreshTable();
         idCol.setCellValueFactory(new PropertyValueFactory<>(Const.OBJECT_ID));
@@ -182,7 +189,6 @@ public class ObjectController extends BaseController implements Initializable {
     private void refreshTable() {
         try {
             EnterprisesList.clear();
-
             query = "SELECT * FROM "+Const.OBJECT_TABLE;
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -194,15 +200,35 @@ public class ObjectController extends BaseController implements Initializable {
                         resultSet.getString(Const.OBJECT_LOCATION),
                         resultSet.getString(Const.OBJECT_DESCRIPTION)));
                 objectsTable.setItems(EnterprisesList);
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(ObjectController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private ObservableList<Enterprise> filterStringData(String filter) {
+        ObservableList<Enterprise> filteredList = FXCollections.observableArrayList();
+        for (Enterprise item : EnterprisesList) {
+                filterByEnterpriseName(filter, filteredList, item);
+        }
+        return filteredList;
+    }
+    private void filterByEnterpriseName(String filter, ObservableList<Enterprise> filteredList, Enterprise item) {
+        if (item.getNameObject().toLowerCase().contains(filter.toLowerCase())) {
+            filteredList.add(item);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        enterpriseFilter.setVisible(false);
+        enterpriseFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
+            } else {
+                objectsTable.setItems(filterStringData(newValue));
+            }
+        });
+
         loadData();
     }
 }

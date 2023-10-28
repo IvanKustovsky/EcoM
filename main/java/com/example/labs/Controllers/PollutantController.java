@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.example.labs.DataBase.Const;
-import com.example.labs.DataBase.DataBaseHandler;
 import com.example.labs.Models.Pollutant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,7 +40,15 @@ public class PollutantController extends BaseController implements Initializable
     @FXML
     private TableColumn<Pollutant, String> massConsumptionCol;
     @FXML
+    private TableColumn<Pollutant, Double> rfcCol;
+    @FXML
+    private TableColumn<Pollutant, Double> sfCol;
+    @FXML
     private TableColumn<Pollutant, String> pollutantNameCol;
+    @FXML
+    private TextField pollutantFilter;
+    @FXML
+    private Button showHideBtn;
     ObservableList<Pollutant> PollutantsList = FXCollections.observableArrayList();
 
     @FXML
@@ -81,7 +87,8 @@ public class PollutantController extends BaseController implements Initializable
 
             AddPollutantController addPollutantController = loader.getController();
             addPollutantController.setUpdate(true);
-            addPollutantController.setTextField(pollutant.getName(),pollutant.getGdk(),pollutant.getMass_consumption());
+            addPollutantController.setTextField(pollutant.getName(),pollutant.getGdk(),
+                    pollutant.getMass_consumption(),pollutant.getRfc(),pollutant.getSf());
             Parent parent = loader.getRoot();
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
@@ -100,18 +107,18 @@ public class PollutantController extends BaseController implements Initializable
     void importExcelData() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("C:\\Users\\user\\Desktop" +
-                "\\НАВЧАННЯ\\5 семестр\\ЕкоМ\\Лаб1"));
+                "\\НАВЧАННЯ\\5 семестр\\ЕкоМ\\Лаб2"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
             try (FileInputStream fis = new FileInputStream(selectedFile);
-                 Workbook workbook = new XSSFWorkbook(fis);
-                 Connection connection = new DataBaseHandler().getDbConnection()) {
+                 Workbook workbook = new XSSFWorkbook(fis)) {
 
                 String insert = "INSERT INTO " + Const.POLLUTANT_TABLE + "(" + Const.POLLUTANT_CODE +","
                         + Const.POLLUTANT_NAME + "," + Const.POLLUTANT_GDK + ","
-                        + Const.POLLUTANT_MASS_CONSUMPTION + ")" + "VALUES(?,?,?,?)";
+                        + Const.POLLUTANT_MASS_CONSUMPTION + "," + Const.POLLUTANT_RFC + "," + Const.POLLUTANT_SF
+                        + ")" + "VALUES(?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(insert);
 
                 Sheet sheet = workbook.getSheetAt(0);
@@ -121,6 +128,8 @@ public class PollutantController extends BaseController implements Initializable
                     String name = row.getCell(1).getStringCellValue();
                     double gdk = row.getCell(2).getNumericCellValue();
                     double mass_consumption = row.getCell(3).getNumericCellValue();
+                    double rfc = row.getCell(4).getNumericCellValue(); // референтна концентрація
+                    double sf = row.getCell(5).getNumericCellValue(); // фактор нахилу
                     int rightCode = 0;
                     // Перевірка, чи існує об'єкт з таким же ім'ям
                     String checkQuery = "SELECT COUNT(*) FROM " + Const.POLLUTANT_TABLE +
@@ -142,6 +151,8 @@ public class PollutantController extends BaseController implements Initializable
                     preparedStatement.setString(2, name);
                     preparedStatement.setDouble(3, gdk);
                     preparedStatement.setDouble(4, mass_consumption);
+                    preparedStatement.setDouble(5, rfc);
+                    preparedStatement.setDouble(6, sf);
                     preparedStatement.executeUpdate();
                 }
 
@@ -152,6 +163,11 @@ public class PollutantController extends BaseController implements Initializable
             }
         }
         refreshTable();
+    }
+
+    @FXML
+    void exportIntoExcelBtn() {
+        exportIntoExcelBtn(pollutantsTable);
     }
     @FXML
     void getAddView() {
@@ -174,6 +190,25 @@ public class PollutantController extends BaseController implements Initializable
         pollutantNameCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_NAME));
         massConsumptionCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_MASS_CONSUMPTION));
         gdkCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_GDK));
+        rfcCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_RFC));
+        sfCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_SF));
+        rfcCol.setCellFactory(column -> createDoubleCellFactory());
+        sfCol.setCellFactory(column -> createDoubleCellFactory());
+    }
+
+    private TableCell<Pollutant, Double> createDoubleCellFactory() {
+        return new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item != null) {
+                    setText(String.format("%.5f", item));
+                } else {
+                    setText("");
+                }
+            }
+        };
     }
 
     @FXML
@@ -190,7 +225,9 @@ public class PollutantController extends BaseController implements Initializable
                         resultSet.getInt(Const.POLLUTANT_CODE),
                         resultSet.getString(Const.POLLUTANT_NAME),
                         resultSet.getDouble(Const.POLLUTANT_MASS_CONSUMPTION),
-                        resultSet.getDouble(Const.POLLUTANT_GDK)));
+                        resultSet.getDouble(Const.POLLUTANT_GDK),
+                        resultSet.getDouble((Const.POLLUTANT_RFC)),
+                        resultSet.getDouble(Const.POLLUTANT_SF)));
             }
             pollutantsTable.setItems(PollutantsList);
         } catch (SQLException ex) {
@@ -198,8 +235,33 @@ public class PollutantController extends BaseController implements Initializable
         }
     }
 
+    private ObservableList<Pollutant> filterStringData(String filter) {
+        ObservableList<Pollutant> filteredList = FXCollections.observableArrayList();
+        for (Pollutant item : PollutantsList) {
+            filterByPollutantName(filter, filteredList, item);
+        }
+        return filteredList;
+    }
+    private void filterByPollutantName(String filter, ObservableList<Pollutant> filteredList, Pollutant item) {
+        if (item.getName().toLowerCase().contains(filter.toLowerCase())) {
+            filteredList.add(item);
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        pollutantFilter.setVisible(false);
+
+
+        pollutantFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
+            } else {
+                pollutantsTable.setItems(filterStringData(newValue));
+            }
+        });
+
+
         loadData();
     }
 }
