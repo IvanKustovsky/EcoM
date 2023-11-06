@@ -56,7 +56,7 @@ public class BaseController {
     protected String query = null;
     protected PreparedStatement preparedStatement = null ;
     protected ResultSet resultSet = null ;
-    protected static DataBaseHandler DB_Handler = new DataBaseHandler();
+    protected static DataBaseHandler DB_Handler = DataBaseHandler.getInstance();
     protected Connection connection = DB_Handler.getDbConnection();
     protected static Enterprise enterprise = null;
     protected static Pollutant pollutant = null;
@@ -135,7 +135,7 @@ public class BaseController {
             return false;
         }
         try {
-            int d = Integer.parseInt(str);
+            Integer.parseInt(str);
         } catch (NumberFormatException nfe) {
             return false;
         }

@@ -1,5 +1,8 @@
 package com.example.labs.DataBase;
 
+import com.example.labs.Services.Calculations;
+import com.example.labs.Controllers.AddEnterpriseController;
+
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,13 +10,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataBaseHandler extends Configs {
-    Connection dbConnection;
+    private static DataBaseHandler instance = null;
+    private Connection dbConnection;
+    private PreparedStatement preparedStatement;
+
+    private DataBaseHandler() {
+        // Приватний конструктор
+    }
+
+    public static DataBaseHandler getInstance() {
+        if (instance == null) {
+            instance = new DataBaseHandler();
+        }
+        return instance;
+    }
 
     public Connection getDbConnection() {
-        String connectionString = "jdbc:mysql://" + dbHost + ":"+
-                dbPort + "/" + dbName;
+        if (dbConnection != null) {
+            return dbConnection;
+        }
+        String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
         try {
-            dbConnection = DriverManager.getConnection(connectionString,dbUser,dbPass);
+            dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,7 +61,7 @@ public class DataBaseHandler extends Configs {
             // Закриття ресурсів
             resultSet.close();
             statement.close();
-            dbConnection.close();
+            //dbConnection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +92,7 @@ public class DataBaseHandler extends Configs {
             // Закриття ресурсів
             resultSet.close();
             statement.close();
-            dbConnection.close();
+            //dbConnection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,19 +118,20 @@ public class DataBaseHandler extends Configs {
             tableId = Const.POLLUTION_ID;
         }
 
-        ResultSet resSet;
         String select = "SELECT " + column + " FROM " + table + " WHERE " +
                 tableId + "=?";
-        try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(select)) {
+        try {
+            dbConnection = getDbConnection();
+            PreparedStatement preparedStatement = dbConnection.prepareStatement(select);
             preparedStatement.setInt(1, id);
-            resSet = preparedStatement.executeQuery();
+            ResultSet resSet = preparedStatement.executeQuery();
 
             if (resSet.next()) {
                 // Отримуємо значення з вибраного стовпця
                 return resSet.getString(column);
             }
             resSet.close();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +153,7 @@ public class DataBaseHandler extends Configs {
             }
             statement.close();
             resultSet.close();
-            dbConnection.close();
+            //dbConnection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -179,4 +198,66 @@ public class DataBaseHandler extends Configs {
         return -1;
     }
 
+    public PreparedStatement getInsertPollutionPreparedStatement(String query, int id_object,
+            int pollutantCode, double concentration, double pollution, int year) {
+        try {
+            dbConnection = getDbConnection();
+            preparedStatement = dbConnection.prepareStatement(query);
+            double hq = 0, cr = 0, rfc, sf, gdk, mass_consumption, compensation = 0;
+            String rfcStr = getTableColumnById(Const.POLLUTANT_TABLE, Const.POLLUTANT_RFC, pollutantCode);
+            String sfStr = getTableColumnById(Const.POLLUTANT_TABLE, Const.POLLUTANT_SF, pollutantCode);
+            String gdkStr = getTableColumnById(Const.POLLUTANT_TABLE, Const.POLLUTANT_GDK, pollutantCode);
+            String mass_consumptionStr = getTableColumnById(Const.POLLUTANT_TABLE,
+                    Const.POLLUTANT_MASS_CONSUMPTION, pollutantCode);
+            try {
+                gdk = Double.parseDouble(gdkStr);
+                mass_consumption = Double.parseDouble(mass_consumptionStr);
+                rfc = Double.parseDouble(rfcStr);
+                sf = Double.parseDouble(sfStr);
+                hq = Calculations.CalcHq(concentration, rfc);
+                cr = Calculations.CalcCR(concentration, sf);
+                compensation = Calculations.calcCompensation(pollution, mass_consumption, gdk);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+
+            preparedStatement.setInt(1, id_object);
+            preparedStatement.setInt(2, pollutantCode);
+            preparedStatement.setDouble(3, pollution);
+            preparedStatement.setDouble(4, concentration);
+            preparedStatement.setDouble(5, hq);
+            preparedStatement.setDouble(6, cr);
+            preparedStatement.setDouble(7, compensation);
+            preparedStatement.setInt(8, year);
+
+            return preparedStatement; // Додано повернення PreparedStatement
+        } catch (SQLException ex) {
+            Logger.getLogger(AddEnterpriseController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null; // У випадку помилки повертається null
+    }
+
+    public void executeInsertProcess(String query, int id_object, int pollutantCode,
+                                     double concentration, double pollution, int year){
+        try {
+            preparedStatement = getInsertPollutionPreparedStatement(query,id_object,pollutantCode,
+                    concentration,pollution,year);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void executeUpdateProcess(Connection connection, String query, int id_object,
+                                     int pollutantCode, double concentration, double pollution, int year,int pollutionId){
+        try {
+            preparedStatement = getInsertPollutionPreparedStatement(query,id_object,pollutantCode,
+                    concentration,pollution,year);
+            preparedStatement.setInt(9,pollutionId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

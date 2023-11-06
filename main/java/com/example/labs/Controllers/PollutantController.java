@@ -7,6 +7,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,8 +48,6 @@ public class PollutantController extends BaseController implements Initializable
     private TableColumn<Pollutant, String> pollutantNameCol;
     @FXML
     private TextField pollutantFilter;
-    @FXML
-    private Button showHideBtn;
     ObservableList<Pollutant> PollutantsList = FXCollections.observableArrayList();
 
     @FXML
@@ -172,7 +171,7 @@ public class PollutantController extends BaseController implements Initializable
     @FXML
     void getAddView() {
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/com/example/labs/addPollutant.fxml"));
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/labs/addPollutant.fxml")));
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
             stage.setScene(scene);

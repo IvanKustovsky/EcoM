@@ -26,6 +26,7 @@ value_pollution DOUBLE NOT NULL,
 concentration DOUBLE  NOT NULL,
 hq DOUBLE NOT NULL, -- неканцерогенний ризик
 cr DOUBLE  NOT NULL, -- канцерогенний ризик
+compensation DOUBLE NOT NULL, -- відшкодування
 year INT NOT NULL,
 FOREIGN KEY(id_object) REFERENCES object(id) ON DELETE CASCADE,
 FOREIGN KEY(code_pollutant) REFERENCES pollutant(code) ON DELETE CASCADE);
@@ -33,6 +34,8 @@ FOREIGN KEY(code_pollutant) REFERENCES pollutant(code) ON DELETE CASCADE);
 select * from object;
 select * from pollution;
 select * from pollutant;
+
+truncate pollution;
 
 drop database ekoMon;
 

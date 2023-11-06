@@ -1,6 +1,5 @@
 package com.example.labs.Controllers;
 
-import com.example.labs.Calculations.Calculations;
 import com.example.labs.DataBase.Const;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,10 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AddPollutionController extends BaseController implements Initializable {
     private boolean isUpdate;
@@ -86,8 +82,8 @@ public class AddPollutionController extends BaseController implements Initializa
         if (!isUpdate) {
             query = "INSERT INTO " + Const.POLLUTION_TABLE + "("+Const.POLLUTION_OBJECT_ID + "," + Const.POLLUTION_CODE_POLLUTANT
                     + "," + Const.POLLUTION_VALUE + "," + Const.POLLUTION_CONCENTRATION + "," +Const.POLLUTION_HQ
-                    + "," + Const.POLLUTION_CR + "," + Const.POLLUTION_YEAR + ")" +
-                    "VALUES(?,?,?,?,?,?,?)";
+                    + "," + Const.POLLUTION_CR + "," + Const.POLLUTION_COMPENSATION + "," + Const.POLLUTION_YEAR + ")" +
+                    "VALUES(?,?,?,?,?,?,?,?)";
         }else{
             query = "UPDATE " + Const.POLLUTION_TABLE + " SET " +
                     Const.POLLUTION_OBJECT_ID + "=?," +
@@ -96,86 +92,35 @@ public class AddPollutionController extends BaseController implements Initializa
                     Const.POLLUTION_CONCENTRATION + "=?," +
                     Const.POLLUTION_HQ + "=?," +
                     Const.POLLUTION_CR + "=?," +
+                    Const.POLLUTION_COMPENSATION + "=?," +
                     Const.POLLUTION_YEAR + "=?" +
                     " WHERE " + Const.POLLUTION_ID + "=?";
         }
     }
     private void insert() {
-        try {
             int pollutantCode = DB_Handler.getKeyByValue(DB_Handler.getPollutantsCodeAndName(),
                     pollutantsCB.getValue());
             int id_object = DB_Handler.getKeyByValue(DB_Handler.getEnterprisesNameAndID(),
                     enterprisesCB.getValue());
-            double hq = 0, cr = 0, rfc, sf;
-            String rfcStr = DB_Handler.getTableColumnById(
-                    Const.POLLUTANT_TABLE,Const.POLLUTANT_RFC,pollutantCode);
-            String sfStr = DB_Handler.getTableColumnById(
-                    Const.POLLUTANT_TABLE,Const.POLLUTANT_SF,pollutantCode);
+            int year = yearCB.getValue();
             // Перевірка, чи існує запис з такими ж ім'ям підприємства, назвою забрудника речовини та роком
-           pollutionId = DB_Handler.isContainsRecordByEnterprisePollutantAndYear(id_object,pollutantCode, yearCB.getValue());
-                if (pollutionId > 0) {
-                    isUpdate = true;
-                    getQuery();
-                    update();
-                    return;
-                }
-
-            try {
-                rfc = Double.parseDouble(rfcStr);
-                sf = Double.parseDouble(sfStr);
-                hq = Calculations.CalcHq(concentrationValue,rfc);
-                cr = Calculations.CalcCR(concentrationValue,sf);
-            } catch (Exception ex){
-                System.out.println(ex.getMessage());
+            pollutionId = DB_Handler.isContainsRecordByEnterprisePollutantAndYear(id_object, pollutantCode, yearCB.getValue());
+            if (pollutionId > 0) {
+                isUpdate = true;
+                getQuery();
+                update();
+                return;
             }
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id_object);
-            preparedStatement.setInt(2, pollutantCode);
-            preparedStatement.setDouble(3, pollutionValue);
-            preparedStatement.setDouble(4, concentrationValue);
-            preparedStatement.setDouble(5, hq);
-            preparedStatement.setDouble(6, cr);
-            preparedStatement.setInt(7, yearCB.getValue());
-            preparedStatement.execute();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(AddEnterpriseController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            DB_Handler.executeInsertProcess(query,id_object,pollutantCode,concentrationValue,pollutionValue,year);
     }
     private void update() {
-        try {
-            int pollutantCode = DB_Handler.getKeyByValue(DB_Handler.getPollutantsCodeAndName(),
-                    pollutantsCB.getValue());
-            double hq = 0, cr = 0, rfc, sf;
-            String rfcStr = DB_Handler.getTableColumnById(
-                    Const.POLLUTANT_TABLE,Const.POLLUTANT_RFC,pollutantCode);
-            String sfStr = DB_Handler.getTableColumnById(
-                    Const.POLLUTANT_TABLE,Const.POLLUTANT_SF,pollutantCode);
-
-            try {
-                rfc = Double.parseDouble(rfcStr);
-                sf = Double.parseDouble(sfStr);
-                hq = Calculations.CalcHq(concentrationValue,rfc);
-                cr = Calculations.CalcCR(concentrationValue,sf);
-            } catch (Exception ex){
-                System.out.println(ex.getMessage());
-            }
-            pollutionId = (pollution == null) ? pollutionId : pollution.getId_pollution();
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, DB_Handler.getKeyByValue(DB_Handler.getEnterprisesNameAndID(),
-                    enterprisesCB.getValue()));
-            preparedStatement.setInt(2, pollutantCode);
-            preparedStatement.setDouble(3, pollutionValue);
-            preparedStatement.setDouble(4, concentrationValue);
-            preparedStatement.setDouble(5,hq);
-            preparedStatement.setDouble(6,cr);
-            preparedStatement.setInt(7,yearCB.getValue());
-            preparedStatement.setInt(8,pollutionId);
-            preparedStatement.execute();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(AddPollutionController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        pollutionId = (pollution == null) ? pollutionId : pollution.getId_pollution();
+        int pollutantCode = DB_Handler.getKeyByValue(DB_Handler.getPollutantsCodeAndName(),
+                pollutantsCB.getValue());
+        int id_object = DB_Handler.getKeyByValue(DB_Handler.getEnterprisesNameAndID(),
+                enterprisesCB.getValue());
+        int year = yearCB.getValue();
+        DB_Handler.executeUpdateProcess(connection,query,id_object,pollutantCode,concentrationValue,pollutionValue,year,pollutionId);
     }
 
     void setTextField(String enterpriseName, String pollutantName, double pollutionValue,double concentrationValue, int year) {

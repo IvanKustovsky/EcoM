@@ -32,13 +32,14 @@
     <TableView fx:id="pollutionTable" layoutX="28.0" layoutY="296.0" prefHeight="302.0" prefWidth="1084.0">
       <columns>
           <TableColumn fx:id="idCol" prefWidth="39.19997787475586" styleClass="table-column-id" text="ID" />
-          <TableColumn fx:id="enterpriseNameCol" prefWidth="232.00001525878906" text="Підприємство" />
-          <TableColumn fx:id="pollutantNameCol" prefWidth="160.7999267578125" text="Забрудник" />
-          <TableColumn fx:id="valuePollutionCol" prefWidth="91.199951171875" styleClass="table-column-id" text="Викиди (т/рік)" />
-         <TableColumn fx:id="concentrationCol" prefWidth="145.60003662109375" styleClass="table-column-id" text="Концентрація (мг/м^3)" />
-         <TableColumn fx:id="hqCol" prefWidth="174.4000244140625" styleClass="table-column-id" text="Неканцерогенний ризик" />
-         <TableColumn fx:id="crCol" prefWidth="163.20001220703125" styleClass="table-column-id" text="Канцерогенний ризик" />
-          <TableColumn fx:id="yearCol" minWidth="0.0" prefWidth="69.5999755859375" styleClass="table-column-id" text="Рік" />
+          <TableColumn fx:id="enterpriseNameCol" prefWidth="191.9999542236328" text="Підприємство" />
+          <TableColumn fx:id="pollutantNameCol" prefWidth="104.0" text="Забрудник" />
+          <TableColumn fx:id="valuePollutionCol" prefWidth="103.20001220703125" styleClass="table-column-id" text="Викиди (т/рік)" />
+         <TableColumn fx:id="concentrationCol" prefWidth="147.199951171875" styleClass="table-column-id" text="Концентрація (мг/м^3)" />
+         <TableColumn fx:id="hqCol" prefWidth="151.9998779296875" styleClass="table-column-id" text="Неканцерогенний ризик" />
+         <TableColumn fx:id="crCol" prefWidth="152.7999267578125" styleClass="table-column-id" text="Канцерогенний ризик" />
+         <TableColumn fx:id="compensationCol" minWidth="0.0" prefWidth="106.39996337890625" styleClass="table-column-id" text="Штраф (грн)" />
+          <TableColumn fx:id="yearCol" minWidth="0.0" styleClass="table-column-id" text="Рік" />
       </columns>
         <styleClass>
           <String fx:value="table-row-cell" />

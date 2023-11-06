@@ -3,10 +3,10 @@ package com.example.labs.Models;
 public class Pollution {
     int id_pollution,year;
     String nameObject,name;
-    double value_pollution,concentration, hq, cr;
+    double value_pollution,concentration, hq, cr, compensation;
 
     public Pollution(int id_pollution, String nameObject, String name, double value_pollution,
-                     double concentration, double hq, double cr,int year) {
+                     double concentration, double hq, double cr, double compensation, int year) {
         this.id_pollution = id_pollution;
         this.year = year;
         this.nameObject = nameObject;
@@ -15,6 +15,7 @@ public class Pollution {
         this.concentration = concentration;
         this.hq = hq;
         this.cr = cr;
+        this.compensation = compensation;
     }
 
     public int getId_pollution() {
@@ -79,5 +80,13 @@ public class Pollution {
 
     public void setCr(double cr) {
         this.cr = cr;
+    }
+
+    public double getCompensation() {
+        return compensation;
+    }
+
+    public void setCompensation(double compensation) {
+        this.compensation = compensation;
     }
 }

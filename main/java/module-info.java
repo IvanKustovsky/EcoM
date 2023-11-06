@@ -14,6 +14,6 @@ module com.example.labs {
     exports com.example.labs;
     exports com.example.labs.DataBase;
     opens com.example.labs.DataBase to javafx.fxml;
-    exports com.example.labs.Calculations;
-    opens com.example.labs.Calculations;
+    exports com.example.labs.Services;
+    opens com.example.labs.Services;
 }

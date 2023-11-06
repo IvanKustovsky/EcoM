@@ -7,13 +7,13 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.example.labs.Calculations.Calculations;
+import com.example.labs.Services.Calculations;
 import com.example.labs.DataBase.Const;
-import com.example.labs.DataBase.DataBaseHandler;
 import com.example.labs.Models.Pollution;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,6 +36,8 @@ public class PollutionController extends BaseController implements Initializable
     ObservableList<Pollution> PollutionsList = FXCollections.observableArrayList();
     @FXML
     private TableColumn<Pollution, Double> concentrationCol;
+    @FXML
+    private TableColumn<Pollution, Double> compensationCol;
     @FXML
     private TableColumn<Pollution, Double> crCol;
     @FXML
@@ -125,43 +127,28 @@ public class PollutionController extends BaseController implements Initializable
         if (selectedFile != null) {
             try (FileInputStream fis = new FileInputStream(selectedFile);
                  Workbook workbook = new XSSFWorkbook(fis)) {
-                String insert = "INSERT INTO " + Const.POLLUTION_TABLE + "(" + Const.POLLUTION_OBJECT_ID + "," +
+                query = "INSERT INTO " + Const.POLLUTION_TABLE + "(" + Const.POLLUTION_OBJECT_ID + "," +
                         Const.POLLUTION_CODE_POLLUTANT + "," + Const.POLLUTION_VALUE + "," +
                         Const.POLLUTION_CONCENTRATION + "," +Const.POLLUTION_HQ + "," + Const.POLLUTION_CR + ","
-                        + Const.POLLUTION_YEAR + ")" +
-                        "VALUES(?,?,?,?,?,?,?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(insert);
+                        + Const.POLLUTION_COMPENSATION + "," + Const.POLLUTION_YEAR + ")" +
+                        "VALUES(?,?,?,?,?,?,?,?)";
 
                 Sheet sheet = workbook.getSheetAt(0);
                 // Починаємо читання з другого рядка (індекс 1)
                 for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                     Row row = sheet.getRow(i);
-                    double id_object = row.getCell(0).getNumericCellValue();
-                    double code_pollutant = row.getCell(1).getNumericCellValue();
-                    double value_pollution = row.getCell(2).getNumericCellValue();
-                    double year = row.getCell(3).getNumericCellValue();
-                    double concentration = row.getCell(4).getNumericCellValue();
-                    double hq = 0, cr = 0, rfc, sf;
-                    String rfcStr = DB_Handler.getTableColumnById(
-                            Const.POLLUTANT_TABLE,Const.POLLUTANT_RFC,(int)code_pollutant);
-                    String sfStr = DB_Handler.getTableColumnById(
-                            Const.POLLUTANT_TABLE,Const.POLLUTANT_SF,(int)code_pollutant);
-
-                    try {
-                        rfc = Double.parseDouble(rfcStr);
-                        sf = Double.parseDouble(sfStr);
-                        hq = Calculations.CalcHq(concentration,rfc);
-                        cr = Calculations.CalcCR(concentration,sf);
-                    } catch (Exception ex){
-                        System.out.println(ex.getMessage());
-                    }
+                    int id_object = (int) row.getCell(0).getNumericCellValue();
+                    int pollutantCode = (int) row.getCell(1).getNumericCellValue();
+                    double pollutionValue = row.getCell(2).getNumericCellValue();
+                    int year = (int) row.getCell(3).getNumericCellValue();
+                    double concentrationValue = row.getCell(4).getNumericCellValue();
                     // Перевірка, чи існує об'єкт з такими ж ім'ям і локацією
                     String checkQuery = "SELECT COUNT(*) FROM " + Const.POLLUTION_TABLE +
                             " WHERE " + Const.POLLUTION_OBJECT_ID + " = ? AND " +
                             Const.POLLUTION_CODE_POLLUTANT + " = ? AND " + Const.POLLUTION_YEAR + " = ?";
                     PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
                     checkStatement.setDouble(1, id_object);
-                    checkStatement.setDouble(2, code_pollutant);
+                    checkStatement.setDouble(2, pollutantCode);
                     checkStatement.setDouble(3, year);
                     ResultSet resultSet = checkStatement.executeQuery();
                     if (resultSet.next()) {
@@ -170,22 +157,13 @@ public class PollutionController extends BaseController implements Initializable
                             continue;
                         }
                     }
-                    preparedStatement.setDouble(1, id_object);
-                    preparedStatement.setDouble(2, code_pollutant);
-                    preparedStatement.setDouble(3, value_pollution);
-                    preparedStatement.setDouble(4, concentration);
-                    preparedStatement.setDouble(5, hq);
-                    preparedStatement.setDouble(6, cr);
-                    preparedStatement.setDouble(7, year);
-
-                    preparedStatement.executeUpdate();
+                    DB_Handler.executeInsertProcess(query,id_object,pollutantCode,concentrationValue,pollutionValue,year);
+                    //System.out.println("Data imported successfully!");
                 }
-
-                System.out.println("Data imported successfully!");
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
         refreshTable();
     }
@@ -256,6 +234,16 @@ public class PollutionController extends BaseController implements Initializable
         hqCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_HQ));
         crCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_CR));
         yearCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_YEAR));
+        compensationCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_COMPENSATION));
+        compensationCol.setCellFactory(column -> new TableCell<>(){
+            @Override
+            protected void updateItem(Double item, boolean empty){
+                super.updateItem(item,empty);
+                if (item != null){
+                    setText(String.format("%.1f",item));
+                }
+            }
+        });
         hqCol.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
@@ -339,7 +327,7 @@ public class PollutionController extends BaseController implements Initializable
     @FXML
     void getAddView() {
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/com/example/labs/addPollution.fxml"));
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/example/labs/addPollution.fxml")));
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
             stage.setScene(scene);
@@ -358,33 +346,38 @@ public class PollutionController extends BaseController implements Initializable
             query = "SELECT * FROM "+Const.POLLUTION_TABLE;
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
-            DataBaseHandler dataBaseHandler = new DataBaseHandler();
             while (resultSet.next()){
                 int pollutionId = resultSet.getInt(Const.POLLUTION_ID);
                 int object_id = resultSet.getInt(Const.POLLUTION_OBJECT_ID);
                 int code = resultSet.getInt(Const.POLLUTION_CODE_POLLUTANT);
-                String enterpriseName = dataBaseHandler.getTableColumnById(Const.OBJECT_TABLE,Const.OBJECT_NAME,object_id);
-                String pollutantName = dataBaseHandler.getTableColumnById(Const.POLLUTANT_TABLE,Const.POLLUTANT_NAME,code);
+                String enterpriseName = DB_Handler.getTableColumnById(Const.OBJECT_TABLE,Const.OBJECT_NAME,object_id);
+                String pollutantName = DB_Handler.getTableColumnById(Const.POLLUTANT_TABLE,Const.POLLUTANT_NAME,code);
                 double pollutionValue = resultSet.getDouble(Const.POLLUTION_VALUE);
                 double concentration = resultSet.getDouble(Const.POLLUTION_CONCENTRATION);
                 int pollutionYear = resultSet.getInt(Const.POLLUTION_YEAR);
-                double hq = 0, cr = 0, rfc, sf;
+                double hq = 0, cr = 0, rfc, sf, gdk, mass_consumption, compensation = 0;
                 String rfcStr = DB_Handler.getTableColumnById(
                         Const.POLLUTANT_TABLE,Const.POLLUTANT_RFC,code);
                 String sfStr = DB_Handler.getTableColumnById(
                         Const.POLLUTANT_TABLE,Const.POLLUTANT_SF,code);
-
+                String gdkStr = DB_Handler.getTableColumnById(
+                        Const.POLLUTANT_TABLE,Const.POLLUTANT_GDK,code);
+                String mass_consumptionStr = DB_Handler.getTableColumnById(
+                        Const.POLLUTANT_TABLE,Const.POLLUTANT_MASS_CONSUMPTION,code);
                 try {
+                    gdk = Double.parseDouble(gdkStr);
+                    mass_consumption = Double.parseDouble(mass_consumptionStr);
                     rfc = Double.parseDouble(rfcStr);
                     sf = Double.parseDouble(sfStr);
                     hq = Calculations.CalcHq(concentration,rfc);
                     cr = Calculations.CalcCR(concentration,sf);
+                    compensation = Calculations.calcCompensation(pollutionValue,mass_consumption,gdk);
                 } catch (Exception ex){
                     System.out.println(ex.getMessage());
                 }
 
                 PollutionsList.add(new Pollution(pollutionId, enterpriseName, pollutantName, pollutionValue,
-                        concentration, hq, cr, pollutionYear));
+                        concentration, hq, cr, compensation, pollutionYear));
 
             }
             pollutionTable.setItems(PollutionsList);

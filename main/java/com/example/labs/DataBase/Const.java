@@ -26,5 +26,6 @@ public class Const {
     public static final String POLLUTION_CONCENTRATION = "concentration";
     public static final String POLLUTION_HQ = "hq";
     public static final String POLLUTION_CR = "cr";
+    public static final String POLLUTION_COMPENSATION = "compensation";
 
 }
