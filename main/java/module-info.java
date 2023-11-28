@@ -13,6 +13,7 @@ module com.example.labs {
     exports com.example.labs.Controllers;
     exports com.example.labs;
     exports com.example.labs.DataBase;
+    exports com.example.labs.Models;
     opens com.example.labs.DataBase to javafx.fxml;
     exports com.example.labs.Services;
     opens com.example.labs.Services;

@@ -28,6 +28,7 @@
         <Button fx:id="objectBtn" layoutX="154.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToObjectSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Підприємства" />
         <Button fx:id="pollutantBtn" layoutX="301.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutantSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забрудники" />
         <Button fx:id="pollutionBtn" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutionSceneBtn" prefHeight="62.0" prefWidth="154.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забруднення" />
+      <Button fx:id="taxesBtn" layoutX="448.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToTaxesSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Податки" />
     </AnchorPane>
     <TableView fx:id="objectsTable" layoutX="128.0" layoutY="295.0" prefHeight="302.0" prefWidth="879.0">
         <columns>

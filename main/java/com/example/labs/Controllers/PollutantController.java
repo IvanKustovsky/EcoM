@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import com.example.labs.DataBase.Const;
 import com.example.labs.Models.Pollutant;
+import com.example.labs.Services.TaxCalculation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -47,8 +48,12 @@ public class PollutantController extends BaseController implements Initializable
     @FXML
     private TableColumn<Pollutant, String> pollutantNameCol;
     @FXML
+    private TableColumn<Pollutant, Integer> dangerClassCol;
+    @FXML
+    private TableColumn<Pollutant, Double> taxRateCol;
+    @FXML
     private TextField pollutantFilter;
-    ObservableList<Pollutant> PollutantsList = FXCollections.observableArrayList();
+
 
     @FXML
     void deleteData() {
@@ -87,7 +92,8 @@ public class PollutantController extends BaseController implements Initializable
             AddPollutantController addPollutantController = loader.getController();
             addPollutantController.setUpdate(true);
             addPollutantController.setTextField(pollutant.getName(),pollutant.getGdk(),
-                    pollutant.getMass_consumption(),pollutant.getRfc(),pollutant.getSf());
+                    pollutant.getMass_consumption(),pollutant.getRfc(),pollutant.getSf(),
+                    pollutant.getDanger_class(),pollutant.getTax_rate());
             Parent parent = loader.getRoot();
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
@@ -117,8 +123,9 @@ public class PollutantController extends BaseController implements Initializable
                 String insert = "INSERT INTO " + Const.POLLUTANT_TABLE + "(" + Const.POLLUTANT_CODE +","
                         + Const.POLLUTANT_NAME + "," + Const.POLLUTANT_GDK + ","
                         + Const.POLLUTANT_MASS_CONSUMPTION + "," + Const.POLLUTANT_RFC + "," + Const.POLLUTANT_SF
-                        + ")" + "VALUES(?,?,?,?,?,?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(insert);
+                        + "," + Const.POLLUTANT_TAX_RATE + "," + Const.POLLUTANT_CLASS_DANGER
+                        + ")" + "VALUES(?,?,?,?,?,?,?,?)";
+                preparedStatement = connection.prepareStatement(insert);
 
                 Sheet sheet = workbook.getSheetAt(0);
                 for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -129,6 +136,9 @@ public class PollutantController extends BaseController implements Initializable
                     double mass_consumption = row.getCell(3).getNumericCellValue();
                     double rfc = row.getCell(4).getNumericCellValue(); // референтна концентрація
                     double sf = row.getCell(5).getNumericCellValue(); // фактор нахилу
+                    int danger_class = (int) row.getCell(7).getNumericCellValue();
+                    double tax_rate = TaxCalculation.defineTaxRate(row.getCell(6).getNumericCellValue(),danger_class);
+
                     int rightCode = 0;
                     // Перевірка, чи існує об'єкт з таким же ім'ям
                     String checkQuery = "SELECT COUNT(*) FROM " + Const.POLLUTANT_TABLE +
@@ -152,10 +162,10 @@ public class PollutantController extends BaseController implements Initializable
                     preparedStatement.setDouble(4, mass_consumption);
                     preparedStatement.setDouble(5, rfc);
                     preparedStatement.setDouble(6, sf);
+                    preparedStatement.setDouble(7, tax_rate);
+                    preparedStatement.setInt(8, danger_class);
                     preparedStatement.executeUpdate();
                 }
-
-                System.out.println("Data imported successfully!");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -193,6 +203,8 @@ public class PollutantController extends BaseController implements Initializable
         sfCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_SF));
         rfcCol.setCellFactory(column -> createDoubleCellFactory());
         sfCol.setCellFactory(column -> createDoubleCellFactory());
+        dangerClassCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_CLASS_DANGER));
+        taxRateCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTANT_TAX_RATE));
     }
 
     private TableCell<Pollutant, Double> createDoubleCellFactory() {
@@ -215,7 +227,7 @@ public class PollutantController extends BaseController implements Initializable
         try {
             PollutantsList.clear();
 
-            query = "SELECT * FROM "+Const.POLLUTANT_TABLE;
+            query = "SELECT * FROM " + Const.POLLUTANT_TABLE;
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
 
@@ -226,11 +238,13 @@ public class PollutantController extends BaseController implements Initializable
                         resultSet.getDouble(Const.POLLUTANT_MASS_CONSUMPTION),
                         resultSet.getDouble(Const.POLLUTANT_GDK),
                         resultSet.getDouble((Const.POLLUTANT_RFC)),
-                        resultSet.getDouble(Const.POLLUTANT_SF)));
+                        resultSet.getDouble(Const.POLLUTANT_SF),
+                        resultSet.getInt(Const.POLLUTANT_CLASS_DANGER),
+                        resultSet.getDouble(Const.POLLUTANT_TAX_RATE)));
             }
             pollutantsTable.setItems(PollutantsList);
         } catch (SQLException ex) {
-            Logger.getLogger(ObjectController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PollutantController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -250,8 +264,6 @@ public class PollutantController extends BaseController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         pollutantFilter.setVisible(false);
-
-
         pollutantFilter.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
                 loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
@@ -259,8 +271,6 @@ public class PollutantController extends BaseController implements Initializable
                 pollutantsTable.setItems(filterStringData(newValue));
             }
         });
-
-
         loadData();
     }
 }

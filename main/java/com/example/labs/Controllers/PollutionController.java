@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class PollutionController extends BaseController implements Initializable {
-    ObservableList<Pollution> PollutionsList = FXCollections.observableArrayList();
+    ObservableList<Pollution> filteredList = FXCollections.observableArrayList();
     @FXML
     private TableColumn<Pollution, Double> concentrationCol;
     @FXML
@@ -80,7 +80,6 @@ public class PollutionController extends BaseController implements Initializable
                 e.printStackTrace();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setContentText("Щоб видалити запис спочатку оберіть його!");
             alert.showAndWait();
@@ -109,7 +108,6 @@ public class PollutionController extends BaseController implements Initializable
             stage.initStyle(StageStyle.UTILITY);
             stage.show();
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setContentText("Щоб оновити запис спочатку оберіть його!");
             alert.showAndWait();
@@ -158,7 +156,6 @@ public class PollutionController extends BaseController implements Initializable
                         }
                     }
                     DB_Handler.executeInsertProcess(query,id_object,pollutantCode,concentrationValue,pollutionValue,year);
-                    //System.out.println("Data imported successfully!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -172,56 +169,62 @@ public class PollutionController extends BaseController implements Initializable
     void exportIntoExcelBtn() {
         exportIntoExcelBtn(pollutionTable);
     }
-    private ObservableList<Pollution> filterStringData(String filter, boolean isFilterByPollutantName) {
-        ObservableList<Pollution> filteredList = FXCollections.observableArrayList();
-        for (Pollution item : PollutionsList) {
-            if(isFilterByPollutantName){
-                filterByPollutantName(filter, filteredList, item);
+
+
+    private ObservableList<Pollution> filterData(String filter, ObservableList<Pollution> filteredList, boolean isYearData,
+                                                 boolean isIdData, boolean isPollutantData, boolean isEnterpriseData) {
+        ObservableList<Pollution> currentFilteredList = FXCollections.observableArrayList();
+        String lowerCaseFilter = filter.toLowerCase();
+        for (Pollution item : filteredList) {
+            filter(lowerCaseFilter, currentFilteredList, item, isYearData, isIdData, isPollutantData, isEnterpriseData);
+        }
+
+        return currentFilteredList;
+    }
+
+    private void filter(String filter, ObservableList<Pollution> filteredList, Pollution item, boolean isYearData,
+                        boolean isIdData, boolean isPollutantData, boolean isEnterpriseData) {
+        if (isYearData && String.valueOf(item.getYear()).toLowerCase().contains(filter)) {
+            filteredList.add(item);
+        }
+        if (isIdData && String.valueOf(item.getId_pollution()).toLowerCase().contains(filter)) {
+            filteredList.add(item);
+        }
+        if (isEnterpriseData && item.getNameObject().toLowerCase().contains(filter)) {
+            filteredList.add(item);
+        }
+        if (isPollutantData && item.getName().toLowerCase().contains(filter)) {
+            filteredList.add(item);
+        }
+    }
+
+    private void checkAndSetFilteredList(String newValue, ObservableList<Pollution> sourceList,
+                                         String filterValue, boolean isYearData, boolean isIdData,
+                                         boolean isPollutantData, boolean isEnterpriseData) {
+            if (filteredList.isEmpty()) {
+                filteredList = filterData(filterValue, sourceList, isYearData, isIdData, isPollutantData, isEnterpriseData);
             } else {
-                filterByEnterpriseName(filter, filteredList, item);
+                filteredList = filterData(filterValue, filteredList, isYearData, isIdData, isPollutantData, isEnterpriseData);
             }
+        if (newValue.isEmpty()) {
+            filteredList = sourceList;
         }
-        return filteredList;
+            pollutionTable.setItems(filteredList);
     }
 
-    private void filterByEnterpriseName(String filter, ObservableList<Pollution> filteredList, Pollution item) {
-        if (item.getNameObject().toLowerCase().contains(filter.toLowerCase())) {
-            filteredList.add(item);
-        }
-    }
-
-    private void filterByPollutantName(String filter, ObservableList<Pollution> filteredList, Pollution item) {
-        if (item.getName().toLowerCase().contains(filter.toLowerCase())) {
-            filteredList.add(item);
-        }
-    }
-
-    private ObservableList<Pollution> filterDigitData(String filter, boolean isFilterByYear) {
-        ObservableList<Pollution> filteredList = FXCollections.observableArrayList();
-
-        // Перевірка, чи рядок є числом
-        if (isNumeric(filter)) {
-            for (Pollution item : PollutionsList) {
-                if (isFilterByYear) {
-                    filterByYear(filter, filteredList, item);
-                } else {
-                    filterById(filter, filteredList, item);
-                }
-            }
-        }
-
-        return filteredList;
-    }
-    private void filterByYear(String filter, ObservableList<Pollution> filteredList, Pollution item) {
-        if (item.getYear() == Integer.parseInt(filter)) {
-            filteredList.add(item);
-        }
-    }
-
-    private void filterById(String filter, ObservableList<Pollution> filteredList, Pollution item) {
-        if (item.getId_pollution() == Integer.parseInt(filter)) {
-            filteredList.add(item);
-        }
+    private void setUpFilters() {
+        enterpriseFilter.textProperty().addListener((observable, oldValue, newValue) ->
+                checkAndSetFilteredList(newValue, PollutionsList, newValue, false,
+                        false, false, true));
+        idFilter.textProperty().addListener((observable, oldValue, newValue) ->
+                checkAndSetFilteredList(newValue, PollutionsList, newValue, false,
+                        true, false, false));
+        pollutantFilter.textProperty().addListener((observable, oldValue, newValue) ->
+                checkAndSetFilteredList(newValue, PollutionsList, newValue, false,
+                        false, true, false));
+        yearFilter.textProperty().addListener((observable, oldValue, newValue) ->
+                checkAndSetFilteredList(newValue, PollutionsList, newValue, true,
+                        false, false, false));
     }
 
     private void loadData() {
@@ -235,14 +238,18 @@ public class PollutionController extends BaseController implements Initializable
         crCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_CR));
         yearCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_YEAR));
         compensationCol.setCellValueFactory(new PropertyValueFactory<>(Const.POLLUTION_COMPENSATION));
-        compensationCol.setCellFactory(column -> new TableCell<>(){
-            @Override
-            protected void updateItem(Double item, boolean empty){
-                super.updateItem(item,empty);
-                if (item != null){
-                    setText(String.format("%.1f",item));
+        compensationCol.setCellFactory(column -> {
+            return new TableCell<>() {
+                @Override
+                protected void updateItem(Double item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.1f", item));
+                    }
                 }
-            }
+            };
         });
         hqCol.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -323,7 +330,6 @@ public class PollutionController extends BaseController implements Initializable
         });
 
     }
-
     @FXML
     void getAddView() {
         try {
@@ -343,7 +349,7 @@ public class PollutionController extends BaseController implements Initializable
     private void refreshTable() {
         try {
             PollutionsList.clear();
-            query = "SELECT * FROM "+Const.POLLUTION_TABLE;
+            query = "SELECT * FROM " + Const.POLLUTION_TABLE;
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -367,11 +373,11 @@ public class PollutionController extends BaseController implements Initializable
                 try {
                     gdk = Double.parseDouble(gdkStr);
                     mass_consumption = Double.parseDouble(mass_consumptionStr);
+                    compensation = Calculations.calcCompensation(pollutionValue,mass_consumption,gdk);
                     rfc = Double.parseDouble(rfcStr);
                     sf = Double.parseDouble(sfStr);
                     hq = Calculations.CalcHq(concentration,rfc);
                     cr = Calculations.CalcCR(concentration,sf);
-                    compensation = Calculations.calcCompensation(pollutionValue,mass_consumption,gdk);
                 } catch (Exception ex){
                     System.out.println(ex.getMessage());
                 }
@@ -382,43 +388,8 @@ public class PollutionController extends BaseController implements Initializable
             }
             pollutionTable.setItems(PollutionsList);
         } catch (SQLException ex) {
-            Logger.getLogger(ObjectController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PollutionController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private void setUpFilters(){
-        enterpriseFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
-                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
-            } else {
-                pollutionTable.setItems(filterStringData(newValue, false));
-            }
-        });
-
-        pollutantFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
-                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
-            } else {
-                pollutionTable.setItems(filterStringData(newValue, true));
-            }
-        });
-
-        idFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
-                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
-            } else {
-                pollutionTable.setItems(filterDigitData(newValue, false));
-            }
-        });
-
-        yearFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
-                loadData(); // Повернення до старого вигляду, якщо текст у полі пустий
-            }
-            else {
-                pollutionTable.setItems(filterDigitData(newValue, true));
-            }
-        });
     }
 
     @Override
@@ -427,8 +398,8 @@ public class PollutionController extends BaseController implements Initializable
         enterpriseFilter.setVisible(false);
         pollutantFilter.setVisible(false);
         yearFilter.setVisible(false);
-        setUpFilters();
         loadData();
+        setUpFilters();
     }
 }
 

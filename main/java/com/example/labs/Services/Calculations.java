@@ -14,19 +14,6 @@ public class Calculations {
     private final static int Time = 365*24;
     private final static double Kzi = 1;
 
-    public static double CalcCR(double concentration, double sf){
-        long rounded = Math.round(CalcLADD(concentration) * sf * 1_000_00000);
-        return rounded / 1_000_00000.0;
-    }
-
-    public static double CalcHq(double concentration, double rfc){
-        long rounded = Math.round((concentration/rfc)*1_000_00000);
-        return rounded / 1_000_00000.0;
-    }
-    private static double CalcLADD(double concentration){
-        return ((concentration * Tout * V_out) + (concentration * Tin * V_in)) * EF * ED /(BW * AT * 365);
-    }
-
     public static double calcCompensation(double pollution_value, double mass_consumption,double gdk){
         double Kt = K_population * Kf;
         double Ai = (gdk > 1) ? (10/gdk) : (1/gdk);
@@ -38,6 +25,19 @@ public class Calculations {
 
     private static double CalcPollutionMass(double pollution_value, double mass_consumption, int t){
         return 3.6 * Math.pow(10,-3) * (pollution_value - mass_consumption) * t;
+    }
+
+    public static double CalcCR(double concentration, double sf){
+        long rounded = Math.round(CalcLADD(concentration) * sf * 1_000_00000);
+        return rounded / 1_000_00000.0;
+    }
+
+    public static double CalcHq(double concentration, double rfc){
+        long rounded = Math.round((concentration/rfc)*1_000_00000);
+        return rounded / 1_000_00000.0;
+    }
+    private static double CalcLADD(double concentration){
+        return ((concentration * Tout * V_out) + (concentration * Tin * V_in)) * EF * ED /(BW * AT * 365);
     }
 
 }

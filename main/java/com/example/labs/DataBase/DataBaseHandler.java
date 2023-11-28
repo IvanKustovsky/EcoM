@@ -99,6 +99,7 @@ public class DataBaseHandler extends Configs {
         return pollutantsList;
     }
 
+
     public int getKeyByValue(HashMap<Integer,String> map, String value){
         int key = 0;
         for (Map.Entry<Integer, String> entry : map.entrySet()) {
@@ -169,6 +170,35 @@ public class DataBaseHandler extends Configs {
         HashMap<Integer,String> map = getPollutantsCodeAndName();
         return map.containsKey(code);
     }
+    public int getDangerClassByCode(int code) {
+        int dangerClass = -1; // За замовчуванням, якщо клас не знайдено
+
+        try {
+            // Підключення до бази даних
+            dbConnection = getDbConnection();
+
+            // Запит до бази даних для отримання класу небезпеки за кодом
+            String dangerClassQuery = "SELECT " + Const.POLLUTANT_CLASS_DANGER + " FROM "
+                    + Const.POLLUTANT_TABLE + " WHERE " + Const.POLLUTANT_CODE + " = " + code;
+
+            Statement statement = dbConnection.createStatement();
+            ResultSet resultSet = statement.executeQuery(dangerClassQuery);
+
+            // Перевірка, чи є результати запиту
+            if (resultSet.next()) {
+                dangerClass = resultSet.getInt(Const.POLLUTANT_CLASS_DANGER);
+            }
+
+            // Закриття ресурсів
+            resultSet.close();
+            statement.close();
+            //dbConnection.close(); // Розкоментуйте, якщо ви хочете закрити з'єднання
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dangerClass;
+    }
 
     public int isContainsRecordByEnterprisePollutantAndYear(int id_object, int pollutantCode,int year){
         // Перевірка, чи існує запис з такими ж ім'ям підприємства, назвою забрудника речовини та роком
@@ -190,7 +220,7 @@ public class DataBaseHandler extends Configs {
             }
             resultSet.close();
             checkStatement.close();
-            dbConnection.close();
+            //dbConnection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -249,7 +279,7 @@ public class DataBaseHandler extends Configs {
         }
     }
 
-    public void executeUpdateProcess(Connection connection, String query, int id_object,
+    public void executeUpdateProcess(String query, int id_object,
                                      int pollutantCode, double concentration, double pollution, int year,int pollutionId){
         try {
             preparedStatement = getInsertPollutionPreparedStatement(query,id_object,pollutantCode,

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="751.0" prefWidth="1136.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.TaxesController">
+    <AnchorPane prefHeight="90.0" prefWidth="1136.0" style="-fx-background-color: #3498db;">
+        <Label layoutX="396.0" layoutY="14.0" prefHeight="44.0" prefWidth="343.0" text="Екологічний моніторинг" textAlignment="RIGHT">
+            <font>
+                <Font name="Bookman Old Style Bold Italic" size="24.0" />
+            </font>
+        </Label>
+        <Label layoutX="542.0" layoutY="58.0" text="Виконали студенти групи ТР-13 Кустовський Іван та Малишева Вікторія">
+            <font>
+                <Font name="Century Gothic Bold" size="16.0" />
+            </font>
+        </Label>
+    </AnchorPane>
+    <AnchorPane layoutY="90.0" prefHeight="62.0" prefWidth="1136.0" style="-fx-background-color: #FAFA03;">
+        <Button fx:id="objectBtn" layoutX="154.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToObjectSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Підприємства" />
+        <Button fx:id="pollutantBtn" layoutX="301.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutantSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забрудники" />
+        <Button fx:id="pollutionBtn" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToPollutionSceneBtn" prefHeight="62.0" prefWidth="154.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Забруднення" />
+      <Button fx:id="taxesBtn" layoutX="448.0" layoutY="-1.0" mnemonicParsing="false" onAction="#switchToTaxesSceneBtn" prefHeight="62.0" prefWidth="147.0" style="-fx-background-color: #37DF0C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 0;" text="Податки" />
+    </AnchorPane>
+    <TableView fx:id="taxesTable" layoutX="97.0" layoutY="302.0" prefHeight="300.0" prefWidth="942.0" stylesheets="@styles.css">
+        <columns>
+            <TableColumn fx:id="objectNameCol" prefWidth="184.00001525878906" styleClass="table-column-id" text="Назва підприємства" />
+            <TableColumn fx:id="pollutantNameCol" prefWidth="140.0" styleClass="table-column-id" text="Назва речовини" />
+         <TableColumn fx:id="classDangerCol" minWidth="8.800048828125" prefWidth="147.20001220703125" styleClass="table-column-id" text="Клас небезпеки" />
+            <TableColumn fx:id="valuePollutionCol" prefWidth="114.4000244140625" styleClass="table-column-id" text="Викиди(т/рік)" />
+            <TableColumn fx:id="taxRateCol" prefWidth="129.5999755859375" styleClass="table-column-id" text="Ставка податку (грн)" />
+            <TableColumn fx:id="taxSumCol" minWidth="8.800048828125" prefWidth="141.5999755859375" styleClass="table-column-id" text="Сума податку (грн)" />
+         <TableColumn fx:id="yearCol" minWidth="8.800048828125" prefWidth="79.199951171875" styleClass="table-column-id" text="Рік" />
+        </columns>
+        <styleClass>
+            <String fx:value="table-cell" />
+            <String fx:value="table-row-cell1" />
+        </styleClass>
+    </TableView>
+    <Label layoutX="339.0" layoutY="190.0" prefHeight="35.0" prefWidth="472.0" styleClass="custom-label" text="Податки за викиди в атмосферне повітря" />
+    <Button fx:id="showHideBtn" layoutX="508.0" layoutY="609.0" mnemonicParsing="false" onAction="#showFilters" prefHeight="46.0" prefWidth="134.0" styleClass="stylish-button" text="Show Filters" />
+    <TextField fx:id="enterpriseFilter" layoutX="243.0" layoutY="676.0" prefHeight="42.0" prefWidth="191.0" promptText="Фільтр по Підприємству" />
+    <TextField fx:id="pollutantFilter" layoutX="475.0" layoutY="676.0" prefHeight="42.0" prefWidth="199.0" promptText="Фільтр по Забруднику" />
+    <TextField fx:id="yearFilter" layoutX="711.0" layoutY="676.0" prefHeight="42.0" prefWidth="199.0" promptText="Фільтр по Року" />
+   <HBox layoutX="275.0" layoutY="239.0" prefHeight="62.0" prefWidth="600.0">
+      <children>
+         <Label prefHeight="36.0" prefWidth="320.0" text="Загальна сума податків:">
+            <font>
+               <Font name="Castellar" size="28.0" />
+            </font>
+            <HBox.margin>
+               <Insets left="55.0" top="15.0" />
+            </HBox.margin>
+         </Label>
+         <Text fx:id="totalTaxAmount" strokeType="OUTSIDE" strokeWidth="0.0" text="0,00" wrappingWidth="201.0">
+            <font>
+               <Font name="Century" size="28.0" />
+            </font>
+            <HBox.margin>
+               <Insets top="17.0" />
+            </HBox.margin>
+         </Text>
+      </children>
+   </HBox>
+   <Button fx:id="exportIntoExcelBtn" layoutX="867.0" layoutY="247.0" mnemonicParsing="false" onAction="#exportIntoExcelBtn" styleClass="stylish-button" text="Download .xlsx file" />
+</AnchorPane>

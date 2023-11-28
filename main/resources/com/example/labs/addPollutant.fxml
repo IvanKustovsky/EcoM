@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="519.0" prefWidth="393.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutantController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="581.0" prefWidth="400.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.labs.Controllers.AddPollutantController">
     <HBox prefHeight="61.0" prefWidth="394.0">
         <Label fx:id="formTitleId" prefHeight="38.0" prefWidth="220.0" styleClass="custom-label" text="Додавання об'єкта" textAlignment="CENTER">
             <HBox.margin>
@@ -18,7 +19,7 @@
         </Label>
     </HBox>
     <HBox prefHeight="23.0" prefWidth="400.0">
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Назва" textAlignment="CENTER" wrappingWidth="382.9367642402649">
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Назва" textAlignment="CENTER" wrappingWidth="399.73675203323364">
             <HBox.margin>
                 <Insets top="5.0" />
             </HBox.margin>
@@ -74,9 +75,29 @@
          <Insets left="150.0" right="150.0" />
       </VBox.margin>
    </TextField>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Клас небезпеки" textAlignment="CENTER" wrappingWidth="394.9367561340332">
+      <font>
+         <Font size="23.0" />
+      </font>
+   </Text>
+   <ChoiceBox fx:id="dangerClassesCB" prefHeight="26.0" prefWidth="300.0">
+      <VBox.margin>
+         <Insets left="150.0" right="150.0" />
+      </VBox.margin>
+   </ChoiceBox>
+   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ставка податку" textAlignment="CENTER" wrappingWidth="394.9367561340332">
+      <font>
+         <Font size="23.0" />
+      </font>
+   </Text>
+   <TextField fx:id="taxRateId" prefHeight="34.0" prefWidth="337.0" promptText="Значення" text="0">
+      <VBox.margin>
+         <Insets left="150.0" right="150.0" />
+      </VBox.margin>
+   </TextField>
     <Button mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="110.0" styleClass="stylish-button" text="Зберегти">
         <VBox.margin>
-            <Insets left="145.0" top="40.0" />
+            <Insets bottom="50.0" left="145.0" top="40.0" />
         </VBox.margin>
     </Button>
 </VBox>

@@ -120,7 +120,7 @@ public class AddPollutionController extends BaseController implements Initializa
         int id_object = DB_Handler.getKeyByValue(DB_Handler.getEnterprisesNameAndID(),
                 enterprisesCB.getValue());
         int year = yearCB.getValue();
-        DB_Handler.executeUpdateProcess(connection,query,id_object,pollutantCode,concentrationValue,pollutionValue,year,pollutionId);
+        DB_Handler.executeUpdateProcess(query,id_object,pollutantCode,concentrationValue,pollutionValue,year,pollutionId);
     }
 
     void setTextField(String enterpriseName, String pollutantName, double pollutionValue,double concentrationValue, int year) {

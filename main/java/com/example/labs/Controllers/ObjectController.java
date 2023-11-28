@@ -43,7 +43,7 @@ public class ObjectController extends BaseController implements Initializable {
     private TableColumn<Enterprise, String> objectNameCol;
     @FXML
     private TextField enterpriseFilter;
-    ObservableList<Enterprise> EnterprisesList = FXCollections.observableArrayList();
+
 
     @FXML
     void deleteData() {
@@ -163,8 +163,6 @@ public class ObjectController extends BaseController implements Initializable {
                         preparedStatement.executeUpdate();
                     }
                 }
-
-                System.out.println("Data imported successfully!");
 
             } catch (Exception e) {
                 e.printStackTrace();

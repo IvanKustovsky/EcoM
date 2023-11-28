@@ -31,8 +31,7 @@ public class AddEnterpriseController extends ObjectController implements Initial
         String description = descriptionId.getText();
 
         if (name.isEmpty() || location.isEmpty() || description.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
+            alert.setHeaderText("Error");
             alert.setContentText("Заповніть всі дані!");
             alert.showAndWait();
         } else {
@@ -57,7 +56,6 @@ public class AddEnterpriseController extends ObjectController implements Initial
     }
 
     private void getQuery() {
-
         if (!isUpdate) {
             query = "INSERT INTO " + Const.OBJECT_TABLE + "("+Const.OBJECT_ID + "," + Const.OBJECT_NAME + "," +
                     Const.OBJECT_LOCATION + "," + Const.OBJECT_DESCRIPTION + ")" +
@@ -79,7 +77,7 @@ public class AddEnterpriseController extends ObjectController implements Initial
             preparedStatement.setString(2, enterpriseNameId.getText());
             preparedStatement.setString(3, locationId.getText());
             preparedStatement.setString(4, descriptionId.getText());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(AddEnterpriseController.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,7 +90,7 @@ public class AddEnterpriseController extends ObjectController implements Initial
             preparedStatement.setString(2, locationId.getText());
             preparedStatement.setString(3, descriptionId.getText());
             preparedStatement.setInt(4, enterprise.getId());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
             Logger.getLogger(AddEnterpriseController.class.getName()).log(Level.SEVERE, null, ex);

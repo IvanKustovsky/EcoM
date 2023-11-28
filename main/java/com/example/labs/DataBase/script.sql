@@ -15,7 +15,9 @@ name VARCHAR(45) NOT NULL,
 gdk DOUBLE NOT NULL,
 mass_consumption DOUBLE NOT NULL,
 rfc DOUBLE NOT NULL, -- референтна концентрація
-sf DOUBLE NOT NULL -- фактор нахилу
+sf DOUBLE NOT NULL, -- фактор нахилу
+tax_rate DOUBLE DEFAULT 0, -- ставка податку
+danger_class INT NOT NULL  -- клас небезпеки
 );
 
 create table if not exists pollution(
@@ -31,13 +33,18 @@ year INT NOT NULL,
 FOREIGN KEY(id_object) REFERENCES object(id) ON DELETE CASCADE,
 FOREIGN KEY(code_pollutant) REFERENCES pollutant(code) ON DELETE CASCADE);
 
+create table if not exists tax(
+pollution_id INT NOT NULL,
+rate DOUBLE NOT NULL, -- ставка податку
+sum DOUBLE NOT NULL,  -- сума податку
+FOREIGN KEY (pollution_id) REFERENCES pollution(id_pollution) ON DELETE CASCADE);
+
 select * from object;
 select * from pollution;
 select * from pollutant;
+select * from tax;
 
-truncate pollution;
-
-drop database ekoMon;
+drop database if exists ekoMon;
 
 
 

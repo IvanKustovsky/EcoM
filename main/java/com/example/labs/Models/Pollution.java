@@ -1,9 +1,9 @@
 package com.example.labs.Models;
 
 public class Pollution {
-    int id_pollution,year;
-    String nameObject,name;
-    double value_pollution,concentration, hq, cr, compensation;
+    private int id_pollution,year;
+    private String nameObject,name;
+    private double value_pollution,concentration, hq, cr, compensation;
 
     public Pollution(int id_pollution, String nameObject, String name, double value_pollution,
                      double concentration, double hq, double cr, double compensation, int year) {
@@ -89,4 +89,5 @@ public class Pollution {
     public void setCompensation(double compensation) {
         this.compensation = compensation;
     }
+
 }

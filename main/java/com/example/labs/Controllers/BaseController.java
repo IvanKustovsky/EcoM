@@ -5,6 +5,9 @@ import com.example.labs.Main;
 import com.example.labs.Models.Enterprise;
 import com.example.labs.Models.Pollutant;
 import com.example.labs.Models.Pollution;
+import com.example.labs.Models.Tax;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,6 +39,8 @@ public class BaseController {
     @FXML
     protected Button pollutionBtn;
     @FXML
+    protected Button taxesBtn;
+    @FXML
     protected ImageView addDataImage;
     @FXML
     protected ImageView refreshTableImage;
@@ -64,8 +69,27 @@ public class BaseController {
     protected static boolean isObjectSceneOpen = false;
     protected static boolean isPollutionSceneOpen = false;
     protected static boolean isPollutantSceneOpen = false;
+    protected static boolean isTaxesSceneOpen = false;
+    protected static ObservableList<Pollution> PollutionsList = FXCollections.observableArrayList();
+    protected static ObservableList<Tax> TaxesList = FXCollections.observableArrayList();
+    protected static ObservableList<Pollutant> PollutantsList = FXCollections.observableArrayList();
+    protected static ObservableList<Enterprise> EnterprisesList = FXCollections.observableArrayList();
+    protected final Alert alert = new Alert(Alert.AlertType.ERROR);
     private static Stage previousStage = Main.innitialStage;
 
+    protected double getDoubleValue(String value, String fieldName) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            showAlert("Помилка", fieldName + " не є числом!");
+            return -1; // або інше значення за замовчуванням
+        }
+    }
+    protected void showAlert(String header, String content) {
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
     @FXML
     protected void showAddTip() {
         Tooltip tooltip = new Tooltip("Додати дані");
@@ -74,8 +98,8 @@ public class BaseController {
 
     @FXML
     protected void showDeleteTip() {
-        Tooltip tooltip = new Tooltip("Оновити таблицю");
-        Tooltip.install(refreshTableImage, tooltip);
+        Tooltip tooltip = new Tooltip("Видалити дані");
+        Tooltip.install(deleteDataImage, tooltip);
     }
 
     @FXML
@@ -86,8 +110,24 @@ public class BaseController {
 
     @FXML
     protected void showRefreshTip() {
-        Tooltip tooltip = new Tooltip("Видалити дані");
-        Tooltip.install(deleteDataImage, tooltip);
+        Tooltip tooltip = new Tooltip("Оновити таблицю");
+        Tooltip.install(refreshTableImage, tooltip);
+    }
+    @FXML
+    protected void showFilters() {
+        if (showHideBtn.getText().equals("Show Filters")) {
+            if(idFilter != null){idFilter.setVisible(true);}
+            if(enterpriseFilter != null){enterpriseFilter.setVisible(true);}
+            if(pollutantFilter != null){pollutantFilter.setVisible(true);}
+            if(yearFilter != null){yearFilter.setVisible(true);}
+            showHideBtn.setText("Hide Filters");
+        } else{
+            if(idFilter != null){idFilter.setVisible(false); idFilter.setText("");}
+            if(enterpriseFilter != null){enterpriseFilter.setVisible(false); enterpriseFilter.setText("");}
+            if(pollutantFilter != null){pollutantFilter.setVisible(false); pollutantFilter.setText("");}
+            if(yearFilter != null){yearFilter.setVisible(false); yearFilter.setText("");}
+            showHideBtn.setText("Show Filters");
+        }
     }
     protected void exportIntoExcelBtn(TableView<?> table){
         FileChooser fileChooser = new FileChooser();
@@ -129,116 +169,67 @@ public class BaseController {
             }
         }
     }
-
-    protected boolean isNumeric(String str) {
-        if (str == null) {
-            return false;
-        }
+    private void openScene(String title, String fxmlPath) {
         try {
-            Integer.parseInt(str);
-        } catch (NumberFormatException nfe) {
-            return false;
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root1 = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root1));
+
+            // Якщо попередня сцена існує - закриваємо її
+            if (previousStage != null) {
+                previousStage.close();
+            }
+
+            stage.show();
+            previousStage = stage; // Зберігаємо посилання на поточну сцену
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return true;
     }
+
     @FXML
     void switchToPollutantSceneBtn() {
         if (!isPollutantSceneOpen) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().
-                        getResource("/com/example/labs/pollutant.fxml"));
-                Parent root1 = fxmlLoader.load();
-                Stage stage = new Stage();
-                stage.setTitle("Забрудники");
-                stage.setScene(new Scene(root1));
-
-                stage.setOnCloseRequest(e -> isPollutantSceneOpen = false);
-                //Якщо попередня сцена існує - закриваємо її
-                if (previousStage != null) {
-                    previousStage.close();
-                }
-
-                stage.show();
-                isPollutantSceneOpen = true;
-                isObjectSceneOpen = false;
-                isPollutionSceneOpen = false;
-
-                previousStage = stage;//Зберігаємо посилання на поточну сцену
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            openScene("Забрудники", "/com/example/labs/pollutant.fxml");
+            isPollutantSceneOpen = true;
+            isObjectSceneOpen = false;
+            isPollutionSceneOpen = false;
+            isTaxesSceneOpen = false;
         }
     }
 
     @FXML
-    protected void showFilters() {
-        if (showHideBtn.getText().equals("Show Filters")) {
-            if(idFilter != null){idFilter.setVisible(true);}
-            if(enterpriseFilter != null){enterpriseFilter.setVisible(true);}
-            if(pollutantFilter != null){pollutantFilter.setVisible(true);}
-            if(yearFilter != null){yearFilter.setVisible(true);}
-            showHideBtn.setText("Hide Filters");
-        } else{
-            if(idFilter != null){idFilter.setVisible(false); idFilter.setText("");}
-            if(enterpriseFilter != null){enterpriseFilter.setVisible(false); enterpriseFilter.setText("");}
-            if(pollutantFilter != null){pollutantFilter.setVisible(false); pollutantFilter.setText("");}
-            if(yearFilter != null){yearFilter.setVisible(false); yearFilter.setText("");}
-            showHideBtn.setText("Show Filters");
+    void switchToTaxesSceneBtn() {
+        if (!isTaxesSceneOpen) {
+            openScene("Податки", "/com/example/labs/taxes.fxml");
+            isTaxesSceneOpen = true;
+            isPollutantSceneOpen = false;
+            isObjectSceneOpen = false;
+            isPollutionSceneOpen = false;
         }
     }
+
     @FXML
     protected void switchToPollutionSceneBtn() {
         if (!isPollutionSceneOpen) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().
-                        getResource("/com/example/labs/pollution.fxml"));
-                Parent root1 = fxmlLoader.load();
-                Stage stage = new Stage();
-                stage.setTitle("Забруднення");
-                stage.setScene(new Scene(root1));
-
-                stage.setOnCloseRequest(e -> isPollutionSceneOpen = false);
-
-                //Якщо попередня сцена існує - закриваємо її
-                if (previousStage != null) {
-                    previousStage.close();
-                }
-                stage.show();
-                isPollutionSceneOpen = true;
-                isObjectSceneOpen = false;
-                isPollutantSceneOpen = false;
-
-                previousStage = stage;//Зберігаємо посилання на поточну сцену
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            openScene("Забруднення", "/com/example/labs/pollution.fxml");
+            isPollutionSceneOpen = true;
+            isPollutantSceneOpen = false;
+            isObjectSceneOpen = false;
+            isTaxesSceneOpen = false;
         }
     }
+
     @FXML
-    protected void switchToObjectSceneBtn()  {
+    protected void switchToObjectSceneBtn() {
         if (!isObjectSceneOpen) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().
-                        getResource("/com/example/labs/objects.fxml"));
-                Parent root1 = fxmlLoader.load();
-                Stage stage = new Stage();
-                stage.setTitle("Підприємства");
-                stage.setScene(new Scene(root1));
-
-                stage.setOnCloseRequest(e -> isObjectSceneOpen = false);
-                //Якщо попередня сцена існує - закриваємо її
-                if (previousStage != null) {
-                    previousStage.close();
-                }
-                stage.show();
-                isObjectSceneOpen = true;
-                isPollutantSceneOpen = false;
-                isPollutionSceneOpen = false;
-
-                previousStage = stage;//Зберігаємо посилання на поточну сцену
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            openScene("Підприємства", "/com/example/labs/objects.fxml");
+            isObjectSceneOpen = true;
+            isPollutantSceneOpen = false;
+            isPollutionSceneOpen = false;
+            isTaxesSceneOpen = false;
         }
     }
 }

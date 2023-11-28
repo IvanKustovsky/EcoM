@@ -1,16 +1,19 @@
 package com.example.labs.Models;
 
 public class Pollutant {
-    int code;
-    String name;
-    double gdk,mass_consumption,rfc,sf;
-    public Pollutant(int code, String name, double mass_consumption,double gdk, double rfc, double sf) {
+    private int code, danger_class;
+    private String name;
+    private double gdk,mass_consumption,rfc,sf,tax_rate;
+    public Pollutant(int code, String name, double mass_consumption,double gdk, double rfc,
+                     double sf, int danger_class, double tax_rate) {
         this.code = code;
         this.name = name;
         this.gdk = gdk;
         this.mass_consumption = mass_consumption;
         this.rfc = rfc;
         this.sf = sf;
+        this.danger_class = danger_class;
+        this.tax_rate = tax_rate;
     }
 
     public int getCode() {
@@ -59,5 +62,21 @@ public class Pollutant {
 
     public void setSf(double sf) {
         this.sf = sf;
+    }
+
+    public int getDanger_class() {
+        return danger_class;
+    }
+
+    public void setDanger_class(int danger_class) {
+        this.danger_class = danger_class;
+    }
+
+    public double getTax_rate() {
+        return tax_rate;
+    }
+
+    public void setTax_rate(double tax_rate) {
+        this.tax_rate = tax_rate;
     }
 }

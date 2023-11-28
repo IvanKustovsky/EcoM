@@ -1,8 +1,8 @@
 package com.example.labs.Models;
 
 public class Enterprise {
-    int id;
-    String nameObject,location,description;
+    private int id;
+    private String nameObject,location,description;
 
     public Enterprise(int id, String nameObject, String location, String description) {
         this.id = id;
